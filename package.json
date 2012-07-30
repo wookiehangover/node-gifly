@@ -1,0 +1,26 @@
+{
+  "author": "",
+  "name": "gifly",
+  "version": "0.0.0",
+  "dependencies": {
+    "everyauth": "~0.2.32",
+    "ecstatic": "~0.1.6",
+    "ramrod": "0.0.3",
+    "redis": "~0.7.2",
+    "less": "~1.3.0",
+    "connect": "~2.4.2",
+    "connect-redis": "~1.4.1",
+    "underscore.deferred": "~0.1.5",
+    "sse": "git://github.com/wookiehangover/sse.js.git",
+    "engine.io": "~0.1.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.3.11",
+    "grunt-contrib": "~0.1.1",
+    "mocha": "~1.3.0"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
