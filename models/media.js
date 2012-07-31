@@ -52,24 +52,29 @@ Process.prototype.upload = function( buffer ){
   var fileHash = crypto.createHash('md5');
   fileHash.update( buffer.toString() );
 
+  var self = this;
+
   // render repsonse page on success
   upload.on('response', function( res ) {
     if( res.statusCode !== 200 ){
       return;
     }
 
-    this.data.url = upload.url;
-    this.data.status = 'uploaded';
-    this.data.modifiedAt = +new Date();
-    this.data.hash = fileHash.digest('hex').slice(0,8);
+    self.data.url = upload.url;
+    self.data.status = 'uploaded';
+    self.data.modifiedAt = +new Date();
+    self.data.hash = fileHash.digest('hex').slice(0,8);
 
-    this.update( this.data );
+    self.update( self.data );
   });
 
   upload.end( buffer );
 };
 
 Process.prototype.update = function( data ){
+
+  console.log(data);
+
   var hash = [ 'upload:'+ data.id ];
 
   for(var i in data){
