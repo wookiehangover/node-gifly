@@ -21,6 +21,7 @@
       data: form
     });
 
+
     dfd.done(function( data ){
       console.log(data);
     });
@@ -41,9 +42,25 @@
 
   var socket = new eio.Socket({ host: location.hostname, port: location.port });
 
+  var gif = {};
+
   socket.on('message', function(data){
     data = JSON.parse(data);
     console.log(data);
+    $.extend(gif, data);
+    if(gif.cover_url && gif.url){
+      $('body').append('<a href="'+gif.url+'"><img src="'+ gif.cover_url +'"/></a>');
+    }
   });
+
+  $('body').on('click', 'a', function(e){
+  
+    var $this = $(this);
+    $this.find('img').attr('src', $this.attr('href'));
+
+    return false;
+
+  });
+  
 
 })();

@@ -1,61 +1,55 @@
-// var dfd = require('underscore.deferred').Deferred;
+module.exports = function(){ return new User(); };
 var redis = require('redis');
-var client = exports.client = redis.createClient();
 var crypto = require('crypto');
+var bcrypt = require('bcrypt');
 
-client.on('error', function( err ){
-  console.error('Redis Error: '+ err);
-});
+function User( options ){
+  this.client = redis.createClient( options );
 
-exports.create = function( data, cb ){
+  this.client.on('error', function( err ){
+    console.error('Redis Error: '+ err);
+  });
+}
 
-  function saltPassword( user ){
-    var salt = uid(25);
-    var hash = crypto.createHash('sha256');
-    hash.update( user.username + user.password + salt );
+var fn = User.prototype;
 
-    return [ hash.digest('hex'), salt ];
-  }
+fn.create = function( data, cb ){
 
-  function uid(len) {
-    return crypto.randomBytes(Math.ceil(len * 3 / 4))
-      .toString('base64')
-      .slice(0, len);
-  }
-
-  var hash = [ 'user:'+ data.username ];
+  var self = this;
   var user = data;
 
-  if( !user.password ){
-    return cb('Must provide a password');
+  if( user.password !== user.confirmation ){
+    return cb('Password and confirmation must match');
   } else {
-    var salted = saltPassword( data );
-    user.password = salted[0];
-    user.salt = salted[1];
+    delete user.confirmation;
+  }
+
+  if( user.password ){
+    this.storePassword( user.username, user.password );
+    delete user.password;
+  } else {
+    return cb('Must provide a password');
   }
 
   if( !user.email ){
     return cb('Must provide an email');
   }
 
-  user.createdAt = user.modifiedAt = +new Date;
+  user.createdAt = user.modifiedAt = +new Date();
 
-  for(var i in user){
-    if( data.hasOwnProperty(i) )
-      hash.push(i) && hash.push(user[i]);
-  }
+  user.status = 'unconfirmed';
 
-  client.exists( hash[0], function( err, res ){
+  this.client.exists( 'user:'+ user.username, function( err, res ){
     if( res === 1 ){
       cb('You must provide a unique username');
     } else {
-      client.hmset(hash, cb);
+      self.update( user, cb );
     }
   });
 };
 
-exports.get = function( username, cb ){
-  client.hgetall( 'user:' + username, function( err, res ){
+fn.get = function( username, cb ){
+  this.client.hgetall( 'user:' + username, function( err, res ){
     var user = res;
     delete user.salt;
     delete user.password;
@@ -63,19 +57,69 @@ exports.get = function( username, cb ){
   });
 };
 
-exports.update = function( username, data, cb ){
-  
-};
+fn.update = function( data, cb ){
 
-exports.authenticate = function( username, password, cb ){
-  client.hmget('user:'+ username, 'password', 'salt', function(err, res){
-    var hash = crypto.createHash('sha256');
-    hash.update( username + password + res[1] );
+  var hash = [ 'user:'+ data.username ];
 
-    if( hash.digest('hex') === res[0] ){
-      cb( null, true );
-    } else {
-      cb('Authentication Failure');
+  for(var i in data){
+    if( data.hasOwnProperty(i) ){
+      hash.push(i);
+      hash.push(data[i]);
+    }
+  }
+
+  this.client.hmset(hash, function(err, status){
+    if( cb ){
+      cb(err, status, data);
     }
   });
+};
+
+fn.storePassword = function(username, password, cb){
+  var self = this;
+
+  bcrypt.hash( password, 8, function(err, hash){
+
+    if( err ){
+      console.log('Error creating hash: '+ err);
+      console.trace();
+      return;
+    }
+
+    self.update({ username: username, password: hash }, function(err, status, data){
+
+      if( err ){
+        console.error('Error storing password: '+ err);
+        console.trace();
+      }
+
+      if( cb ){
+        cb( err, status, data );
+      }
+    });
+
+  });
+};
+
+fn.authenticate = function( username, password, cb ){
+
+  this.client.hgetall('user:'+ username, function(err, res){
+
+    if( err ){
+      console.error('Error fetching user: '+ username, err);
+      console.trace();
+      return cb('Error fetching user: '+ username);
+    }
+
+    var hash = res.password;
+
+    bcrypt.compare( password, hash, function( err, auth ){
+      delete res.password;
+
+      return auth ?
+        cb( null, res ) :
+        cb('Authentication Failure');
+    });
+  });
+
 };

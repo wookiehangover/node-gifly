@@ -2,11 +2,9 @@ var config = module.exports = {
 
   secret: 'keyboard cat',
 
-  hostname: process.env.FB_URL || 'http://windermute.local:3000',
+  hostname: process.env.FB_URL || 'http://wintermute.local:3000',
 
   port: process.env.PORT || 3000,
-
-  mongo_url: process.env.MONGOLAB_URI || 'mongodb://localhost/gifly',
 
   fb: {
     id: process.env.FB_ID,
@@ -21,7 +19,7 @@ var config = module.exports = {
   s3: {
     key: process.env.AWS_KEY,
     secret: process.env.AWS_SECRET,
-    bucket: 'cloudy-test'
+    bucket: 'i.wookiehangover.com'
   },
 
   types: {

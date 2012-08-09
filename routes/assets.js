@@ -40,7 +40,7 @@ module.exports = function( router ){
   });
 
   router.add('', function( req, res ){
-    fs.createReadStream('./index.html').pipe( res );
+    res.template('index.ejs', { hello: 'world!' });
   });
 
 };

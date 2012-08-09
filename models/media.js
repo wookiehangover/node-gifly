@@ -1,93 +1,50 @@
+var config = require('../config');
 var fs = require('fs');
 var redis  = require('redis');
 var client = exports.client = redis.createClient();
 var crypto = require('crypto');
-var s3 = require('../lib/s3');
+var knox = require('knox');
+
+var s3 = knox.createClient( config.s3 );
 
 client.on('error', function(err){
   console.log('Redis Error: '+ err);
 });
 
-exports.create = function( data, cb ){
-
-  var upload = data;
-  var hash = [ 'upload:'+ upload.id ];
-
-  upload.createdAt = upload.modifiedAt = +new Date();
-
-  for(var i in upload){
-    if(upload.hasOwnProperty(i))
-      hash.push(i) && hash.push(upload[i]);
+function save( data, cb ){
+  var err_msg;
+  if( !data.id ){
+    err_msg = "You must provide an ID";
   }
-
-  client.hmset(hash, function( err, res ){
-    cb( err, upload );
-  });
-
-};
-
-// Uploads Gifs to S3
-//
-// TODO - add image processing task
-
-function Process( file, data ){
-  this.file = file;
-  this.data = data;
-
-  console.log('Processing upload:' + file.name );
-
-  var self = this;
-
-  fs.readFile( file.path, function( err, buffer ){
-    self.upload( buffer );
-  });
-}
-
-Process.prototype.upload = function( buffer ){
-  var upload = s3.put( '/test/' + this.file.name, {
-    'Content-Length': buffer.length,
-    'Content-Type': this.file.type
-  });
-
-  var fileHash = crypto.createHash('md5');
-  fileHash.update( buffer.toString() );
-
-  var self = this;
-
-  // render repsonse page on success
-  upload.on('response', function( res ) {
-    if( res.statusCode !== 200 ){
-      return;
-    }
-
-    self.data.url = upload.url;
-    self.data.status = 'uploaded';
-    self.data.modifiedAt = +new Date();
-    self.data.hash = fileHash.digest('hex').slice(0,8);
-
-    self.update( self.data );
-  });
-
-  upload.end( buffer );
-};
-
-Process.prototype.update = function( data ){
-
-  console.log(data);
+  if( err_msg !== undefined ){
+    return cb( err_msg );
+  }
 
   var hash = [ 'upload:'+ data.id ];
 
   for(var i in data){
-    if( this.data.hasOwnProperty(i) )
-      hash.push(i) && hash.push(data[i]);
+    if( data.hasOwnProperty(i) ){
+      hash.push(i);
+      hash.push(data[i]);
+    }
   }
 
-  client.hmset(hash, function( err, res ){
-    client.zadd('uploads:global', data.createdAt, 'upload:'+ data.id );
-    client.publish('uploads', JSON.stringify(data));
+  client.hmset(hash, function(err, status){
+    if( err ){
+      console.error(err);
+      console.trace();
+    }
+    cb(err, status, data);
   });
+}
+
+exports.create = function( data, cb ){
+  data.createdAt = data.modifiedAt = +new Date();
+  save( data, cb );
 };
 
-exports.process = function( file, data ){
-  return new Process( file, data );
+exports.update = function( data, cb ){
+  data.modifiedAt = +new Date();
+  save( data, cb );
 };
+
