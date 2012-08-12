@@ -6,7 +6,7 @@ var engine = require('engine.io');
 function Engine( server ){
 
   var io = engine.attach( server );
-  var uploads = redis.createClient();
+  var uploads = Engine.client = redis.createClient();
 
   uploads.subscribe('uploads');
   uploads.setMaxListeners(0);

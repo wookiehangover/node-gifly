@@ -2,11 +2,11 @@ var ramrod = require('ramrod');
 
 var router = module.exports = ramrod();
 
-var user = require('./routes/user');
-user( router );
-
 var assets = require('./routes/assets');
 assets( router );
+
+var user = require('./routes/user');
+user( router );
 
 var upload = require('./routes/upload');
 upload( router );

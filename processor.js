@@ -11,6 +11,8 @@ var def = _def.Deferred;
 var client = redis.createClient();
 var s3 = knox.createClient( config.s3 );
 
+var tmpDir = config.tmpDir;
+
 client.on('error', function(err){
   console.log('Redis Error: '+ err);
 });
@@ -66,6 +68,8 @@ function save( data, cb ){
 function Processr( file, data ){
   var self = this;
 
+  console.log('Processing: ', data);
+
   this.file = file;
   this.data = data;
   this.stream = fs.createReadStream( file.path );
@@ -75,8 +79,11 @@ function Processr( file, data ){
     return self[fn]();
   });
 
-  _def.when.apply(null, this.queue).done(function(){
+  _def.when.apply(null, this.queue).then(function(){
     self.cleanup();
+  }, function(){
+    // TODO: cleanup redis records on failure
+    self.cleanup()
   });
 }
 
@@ -116,7 +123,7 @@ Processr.prototype.hash = function( stream ){
   stream.on('end', function(){
     var fileHash = crypto.createHash('md5');
     fileHash.update( buf );
-    data.hash = fileHash.digest('hex').slice(0,8);
+    data.filehash = fileHash.digest('hex').slice(0,8);
 
     save( data, function(err, status, media){
       if( err ){
@@ -144,7 +151,7 @@ Processr.prototype.upload = function( path, stream, headers ){
   var dfd = def();
   var data = this.data;
 
-  path = path || this.file.name;
+  path = path || data.hash + '.gif';
   stream = stream || this.stream;
   headers = headers || {
     'Content-Length': this.file.size,
@@ -170,6 +177,7 @@ Processr.prototype.upload = function( path, stream, headers ){
         dfd.resolve();
         client.publish('uploads', JSON.stringify(media));
         client.zadd('uploads:global', media.createdAt, 'upload:'+ media.id );
+        client.set('gif:'+ data.hash, data.url);
       });
     });
   }
@@ -192,6 +200,8 @@ Processr.prototype.enhance = function( stream ){
   var dfd = def();
   stream = stream || this.stream;
 
+  var filepath = tmpDir + '/cv_'+ self.data.hash + '.gif';
+
   function onUpload(err, res){
     if( err ){
       console.error(err);
@@ -208,7 +218,7 @@ Processr.prototype.enhance = function( stream ){
         cover_url: res.req.url.replace(/https?:/, '')
       };
 
-      self.tmp_files.push('./tmp/cv_'+ self.data.filename);
+      self.tmp_files.push( filepath );
 
       save( data, function(err, status, media){
         if( err ){
@@ -224,7 +234,7 @@ Processr.prototype.enhance = function( stream ){
   }
 
   gm(stream, this.data.filename + '[0]')
-    .write( './tmp/cv_'+ self.data.filename, function(err){
+    .write( filepath, function(err){
       if( err ){
         console.error(err);
         console.trace();
@@ -232,8 +242,16 @@ Processr.prototype.enhance = function( stream ){
         return;
       }
 
-      s3.putFile('./tmp/cv_'+ self.data.filename, 'cv_'+self.data.filename, onUpload);
+      s3.putFile( filepath, 'cv_'+self.data.filename, onUpload);
     });
 
   return dfd.promise();
 };
+
+process.on('close', function(){
+
+  try { client.quit(); } catch (e) {
+    console.error('error quitting redis client', e);
+  }
+
+});

@@ -1,8 +1,8 @@
 var fs = require('fs');
+var crypto = require('crypto');
 var formidable = require('formidable');
-
-var config = require('../config');
 var media = require('../models/media');
+var config = require('../config');
 
 function upload(req, res){
 
@@ -10,7 +10,9 @@ function upload(req, res){
     return res.error(405);
   }
 
-  var form = new formidable.IncomingForm();
+  var form = new formidable.IncomingForm({
+    uploadDir: config.tmpDir
+  });
 
   form.parse( req, function( err, fields, files){
     var file = files.files;
@@ -19,10 +21,14 @@ function upload(req, res){
     data.filename = file.name;
     data.id = file.name + file.size;
 
+
     req.session.get(function(err, sess){
       if(sess && sess.auth){
         data.status = 'processing';
         data.user = sess.auth.username;
+        var fileHash = crypto.createHash('md5');
+        fileHash.update( JSON.stringify( data ) );
+        data.hash = fileHash.digest('hex').slice(0,8);
 
         media.create(data, function onStore(err, upload){
           if( err ){
@@ -34,7 +40,9 @@ function upload(req, res){
             data: data
           }));
 
-          res.json(upload, 201);
+          media.client.set('hash:'+ data.hash, data.id);
+
+          res.json(data, 201);
         });
       }
     });

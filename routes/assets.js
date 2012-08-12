@@ -1,6 +1,7 @@
 var fs         = require('fs');
 var ecstatic   = require('ecstatic');
 var less       = require('less');
+var media      = require('../models/media');
 
 var ec = ecstatic( __dirname + '/..' );
 var parser = new less.Parser({
@@ -35,12 +36,60 @@ module.exports = function( router ){
     router.add(/^\/assets\/css\/([^\.]+)\.css$/, 'less', processLess);
   }
 
+  router.add(/^\/([\w]{8})\.gif$/, function( req, res, hash ){
+
+    media.client.get('gif:'+ hash, function( err, url){
+      if( err ){
+        return res.error(500);
+      }
+
+      if( !url ){
+        return res.error(404);
+      }
+
+
+      res.redirect( 'http:'+ url, 301 );
+
+    });
+  });
+
   router.add('assets/*path', function( req, res ){
     ec( req, res );
   });
 
-  router.add('', function( req, res ){
-    res.template('index.ejs', { hello: 'world!' });
+  router.add('app/*path', function( req, res ){
+    ec( req, res );
   });
 
+  // router.add(/^\/([\w]{8})$/, function( req, res, hash ){
+  //   media.client.get('hash:'+ hash, function( err, key){
+  //     if( err ){
+  //       return res.error(500);
+  //     }
+
+  //     if( !key ){
+  //       return res.error(404);
+  //     }
+
+  //     media.client.hmget('upload:'+ key, function(err, url){
+  //       res.redirect( 'http:'+ url[0], 301 );
+  //     });
+  //   });
+  // });
+
+  router.add('c/:hash', function( req, res, hash ){
+    media.client.get('hash:'+ hash, function( err, key){
+      if( err ){
+        return res.error(500);
+      }
+
+      if( !key ){
+        return res.error(404);
+      }
+
+      media.client.hmget('upload:'+ key, 'cover_url', function(err, url){
+        res.redirect( 'http:'+ url[0], 301 );
+      });
+    });
+  });
 };

@@ -1,7 +1,214 @@
 @import 'reset';
 @import 'variables';
 @import 'mixins';
+@import 'font-awesome';
+@import 'isotope';
+
+.sprite () { background: url(/assets/img/sprite.gif) no-repeat top left; }
+
+.sub () {
+  float:left;
+  clear:both;
+  .border-radius(e('0 3px 3px 0'));
+  width:26px;
+  height:26px;
+  font-size:11px;
+  margin-bottom:2px;
+  background-color:@gray;
+
+  a { float:left; width:26px; height:26px; .sprite();}
+}
+
+html, body { height: auto; height: 100%; }
 
 body {
-  font-family: Helvetica, Arial, sans-serif;
+  #font > #family > .monospace();
+  /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
+}
+
+img:-webkit-full-screen {
+  height: auto;
+}
+
+figure {
+  position: relative;
+  margin: 0 0 20px;
+  float: left; clear: both;
+
+
+}
+
+#head {
+  position:fixed;
+  float:left;
+  width:188px;
+  padding-right:12px;
+  left:0px;
+  top:40px;
+
+  h1 {
+    z-index: 1010;
+    position: relative;
+    float:left;
+    background: url(/assets/img/logo_side.gif) no-repeat top left;
+    text-indent:-2000em;
+    display:block;
+    width: 44px;
+    height: 27px;
+    margin-bottom:2px;
+
+    a {display:block;width:100%;height:100%;}
+
+  }
+
+  .user-nav {
+    z-index: 1010;
+    .sub();
+    cursor:pointer;
+    position:relative;
+    text-indent:-2000em;
+    float:left;
+    width:64px;
+    left:-38px;
+
+    a { float:left; clear: both; color: @gray; position:absolute;}
+
+    #login-link {background-position:39px -29px;right:0; top: 0; width:50px; padding:6px 9px 0 0;color:#fff;}
+    #logout-link {background-position:39px -279px;right:0; top: 0; width:50px; padding:6px 9px 0 0;color:#fff;}
+    #signup-link {background-position:39px -65px;right:0; top: 0; width:50px; padding:6px 9px 0 0;color:#fff;}
+    #upload-link {background-position:39px -97px;right:0;width:50px; padding:6px 9px 0 0;color:#fff;height:20px;}
+
+    a:hover {text-decoration:none;}
+  }
+
+  #search {
+    z-index: 1010;
+    .sub();
+    position:relative;
+    width:200px;
+    left:-174px;
+    a { background-position:7px 8px;position:absolute; right:0; text-indent:-2000em;}
+
+    .transition(e('left 0.3s ease-in-out'));
+
+    &:hover { left: 0; }
+
+    form {
+      float:left;
+
+      input {
+        border:none;
+        border-bottom:1px solid #fff;
+        background:@gray;
+        width:170px;
+        margin:4px 0 0 3px;
+        padding-bottom:1px;
+        color:#fff;
+      }
+    }
+  }
+}
+
+#grid {
+  #grid > .core(188px, 20px);
+  height: 100%;
+
+  article {
+    overflow: hidden;
+    z-index: 1000;
+
+    img {
+      .transition(e('opacity 0.6s ease-in'));
+      .opacity(0);
+    }
+
+    &:hover .controls { left: 0; }
+
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      left: -11em;
+      background: rgba(255,255,255, 0.5);
+      height: 3em;
+      .transition(e('left 0.2s ease-in-out'));
+
+      a {
+        text-decoration: none;
+        color: @blue;
+        font-size: 1.5em;
+        padding: 0.5em;
+        float: left;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+
+        &:active i {
+          position: relative;
+          bottom: -1px;
+          right: -1px;
+        }
+      }
+    }
+
+    .progress {
+      .size(2px,5%);
+      position: absolute;
+      background: @blue;
+      left: 0; top: 0;
+      .box-shadow(0px 0px 4px 0px @blue);
+      .size(2px,5%);
+      .transition(width 0.4s ease-in-out);
+    }
+  }
+
+  &.isotope article img {
+    .opacity(100);
+  }
+}
+
+#loader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: none;
+  font-size: 10px;
+
+  &.js-show {
+    z-index: 1010;
+    display: block;
+
+    -webkit-animation: blink 1s infinite;
+       -moz-animation: blink 1s infinite;
+         -o-animation: blink 1s infinite;
+            animation: blink 1s infinite;
+  }
+}
+
+@-webkit-keyframes blink {
+  0%   { opacity: 0.0; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.0; }
+}
+@-moz-keyframes blink {
+  0%   { opacity: 0.0; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.0; }
+}
+@-o-keyframes blink {
+  0%   { opacity: 0.0; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.0; }
+}
+@keyframes blink {
+  0%   { opacity: 0.0; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.0; }
+}
+
+@media all and (max-height: 480px){
+  #head h1 {
+    .rotate(-90deg);
+    margin-left: -9px;
+    margin-bottom: 10px;
+  }
+
+  #grid article.span2 { width: 320px; }
 }

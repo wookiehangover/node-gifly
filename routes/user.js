@@ -1,4 +1,3 @@
-var config = require('../config');
 var User = require('../models/user');
 var qs = require('querystring');
 var user = User();

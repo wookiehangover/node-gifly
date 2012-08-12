@@ -1,4 +1,19 @@
 <%- include _header.ejs %>
-<h1><%= hello %></h1>
+<div id="grid">
+  <% gifs && gifs.forEach(function(gif){ %>
+    <article class="span2">
+      <figure data-id="<%= gif.id %>">
+        <img src="/c/<%= gif.hash %>"/>
+        <div class="progress"></div>
+      </figure>
+      <div class="controls">
+        <a href="#" data-action="play" class="play"><i class="icon-play"></i></a>
+        <a href="#" data-action="pause"><i class="icon-pause"></i></a>
+        <a href="#" data-action="fullscreen"><i class="icon-fullscreen"></i></a>
+        <a href="/<%= gif.hash %>.gif"><i class="icon-link"></i></a>
+      </div>
+    </article>
+  <% }); %>
+</div>
 <%- include _footer.ejs %>
 

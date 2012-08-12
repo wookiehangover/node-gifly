@@ -1,4 +1,5 @@
 module.exports = decorator;
+var config = require('./config');
 
 var ErrorPage = require('error-page');
 var Negotiator = require('negotiator');
@@ -13,10 +14,9 @@ var keys = new Keygrip(['some_secret']);
 var templateOptions = {
   engine: ejs,
   folder: './templates',
-  cache: (process.env.NODE_ENV === 'production')
+  cache: (process.env.NODE_ENV === 'production'),
+  debug: (process.env.NODE_ENV === 'production')
 };
-
-RedSess.createClient();
 
 Templar.loadFolder('./templates');
 
