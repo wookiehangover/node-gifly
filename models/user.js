@@ -7,7 +7,7 @@ var config = require('../config');
 function User( options ){
   var r = config.redis;
   this.client = exports.client = redis.createClient(r.port, r.host, r);
-  if( r.auth ) config.redis.client.auth(r.auth);
+  if( r.auth ) this.client.auth(r.auth);
 
   this.client.on('error', function( err ){
     console.error('Redis Error: '+ err);

@@ -1,12 +1,15 @@
 module.exports = Engine;
 
-var redis = require('redis');
 var engine = require('engine.io');
+var redis = require('redis');
+var config = require('./config.js');
 
 function Engine( server ){
 
   var io = engine.attach( server );
-  var uploads = Engine.client = redis.createClient();
+  var r = config.redis;
+  var uploads = redis.createClient(r.port, r.host, r);
+  if( r.auth ) uploads.auth(r.auth);
 
   uploads.subscribe('uploads');
   uploads.setMaxListeners(0);

@@ -6,7 +6,7 @@ var knox = require('knox');
 
 var r = config.redis;
 var client = exports.client = redis.createClient(r.port, r.host, r);
-if( r.auth ) config.redis.client.auth(r.auth);
+if( r.auth ) client.auth(r.auth);
 
 var s3 = knox.createClient( config.s3 );
 

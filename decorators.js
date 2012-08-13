@@ -8,17 +8,18 @@ var Cookies = require('cookies');
 var Keygrip = require('keygrip');
 var ejs = require('ejs');
 var Templar = require('templar');
+var path = require('path');
 
 var keys = new Keygrip(['some_secret']);
 
 var templateOptions = {
   engine: ejs,
-  folder: './templates',
+  folder: path.resolve(__dirname + '/templates'),
   cache: (process.env.NODE_ENV === 'production'),
   debug: (process.env.NODE_ENV === 'production')
 };
 
-Templar.loadFolder('./templates');
+Templar.loadFolder( path.resolve(__dirname + '/templates') );
 
 function decorator( req, res ){
   req.negotiator = req.neg = new Negotiator(req);

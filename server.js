@@ -26,7 +26,7 @@ server.listen(config.port, function(){
 // attach real-time engine
 engine( server );
 
-var worker = fork('./processor.js');
+var worker = fork( require('path').resolve(__dirname + '/processor.js'));
 
 process.on('close', function closeAll(){
 

@@ -3,7 +3,7 @@ var config = require('../config');
 
 var r = config.redis;
 var client = exports.client = redis.createClient(r.port, r.host, r);
-if( r.auth ) config.redis.client.auth(r.auth);
+if( r.auth ) client.auth(r.auth);
 
 function getMedia(params, cb){
   var multi = client.multi();

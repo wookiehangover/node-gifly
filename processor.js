@@ -8,8 +8,12 @@ var config = require('./config');
 var _def = require('underscore.deferred');
 var def = _def.Deferred;
 
-var client = redis.createClient();
 var s3 = knox.createClient( config.s3 );
+
+var r = config.redis;
+var client = exports.client = redis.createClient(r.port, r.host, r);
+if( r.auth ) client.auth(r.auth);
+
 
 var tmpDir = config.tmpDir;
 
@@ -21,7 +25,11 @@ client.on('error', function(err){
 // Subscribe to Redis queue for uploads to process
 //
 
-var uploads = redis.createClient();
+var r = config.redis;
+var uploads = redis.createClient(r.port, r.host, r);
+if( r.auth ) uploads.auth(r.auth);
+
+
 
 uploads.subscribe('uploads:process');
 
