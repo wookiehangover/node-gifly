@@ -1,0 +1,5 @@
+#!/bin/sh
+
+curl -ssl https://s3.amazonaws.com/wookie-buildpack/config.admin.js -O ../config.admin.js
+
+NODE_ENV=production npm install
