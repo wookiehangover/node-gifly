@@ -4,25 +4,14 @@
 @import 'font-awesome';
 @import 'isotope';
 
+@ltgray: #E6E6E6;
+
 .sprite () { background: url(/assets/img/sprite.gif) no-repeat top left; }
-
-.sub () {
-  float:left;
-  clear:both;
-  .border-radius(e('0 3px 3px 0'));
-  width:26px;
-  height:26px;
-  font-size:11px;
-  margin-bottom:2px;
-  background-color:@gray;
-
-  a { float:left; width:26px; height:26px; .sprite();}
-}
 
 html, body { height: auto; height: 100%; }
 
 body {
-  #font > #family > .monospace();
+  #font > #family > .sans-serif();
   /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
 }
 
@@ -34,11 +23,9 @@ figure {
   position: relative;
   margin: 0 0 20px;
   float: left; clear: both;
-
-
 }
 
-#head {
+header {
   position:fixed;
   float:left;
   width:188px;
@@ -47,66 +34,84 @@ figure {
   top:40px;
 
   h1 {
+    display:block;
+    float:left;
     z-index: 1010;
     position: relative;
-    float:left;
     background: url(/assets/img/logo_side.gif) no-repeat top left;
     text-indent:-2000em;
-    display:block;
-    width: 44px;
-    height: 27px;
-    margin-bottom:2px;
+    margin-bottom: 0;
+    .size(27px,45px);
 
-    a {display:block;width:100%;height:100%;}
+    a {
+      display:block;
+      .size(100%,100%);
+    }
 
   }
 
-  .user-nav {
+  .sub () {
+    float:left;
+    clear:both;
+    .border-radius(e('0 3px 3px 0'));
+    .size(26px,26px);
+    font-size:11px;
+    margin-top:2px;
+    background-color:@gray;
+
+    a {
+      float:left;
+      clear: both;
+      color: @white;
+      position:absolute;
+      text-decoration:none;
+      .size(100%,100%);
+      .sprite();
+    }
+  }
+
+  nav .user-nav {
     z-index: 1010;
     .sub();
     cursor:pointer;
     position:relative;
-    text-indent:-2000em;
     float:left;
     width:64px;
     left:-38px;
+    .transition(left 0.3s ease-out);
 
-    a { float:left; clear: both; color: @gray; position:absolute;}
-
-    #login-link {background-position:39px -29px;right:0; top: 0; width:50px; padding:6px 9px 0 0;color:#fff;}
-    #logout-link {background-position:39px -279px;right:0; top: 0; width:50px; padding:6px 9px 0 0;color:#fff;}
-    #signup-link {background-position:39px -65px;right:0; top: 0; width:50px; padding:6px 9px 0 0;color:#fff;}
-    #upload-link {background-position:39px -97px;right:0;width:50px; padding:6px 9px 0 0;color:#fff;height:20px;}
-
-    a:hover {text-decoration:none;}
-  }
-
-  #search {
-    z-index: 1010;
-    .sub();
-    position:relative;
-    width:200px;
-    left:-174px;
-    a { background-position:7px 8px;position:absolute; right:0; text-indent:-2000em;}
-
-    .transition(e('left 0.3s ease-in-out'));
-
-    &:hover { left: 0; }
-
-    form {
-      float:left;
-
-      input {
-        border:none;
-        border-bottom:1px solid #fff;
-        background:@gray;
-        width:170px;
-        margin:4px 0 0 3px;
-        padding-bottom:1px;
-        color:#fff;
-      }
+    &:hover {
+      left: 0;
     }
+
+    a {
+      width: 50px;
+      padding: 6px 9px 0 5px;
+    }
+
+    #login-link  { background-position:45px -29px; }
+    #logout-link { background-position:45px -279px;}
+    #signup-link { background-position:45px -65px; }
+    [data-action=upload] { background-position:45px -97px; }
+
   }
+
+}
+
+.container {
+  padding-left: 80px;
+
+  h1 {
+    background: @ltgray;
+    float: left;
+  }
+
+  form {
+    float: left;
+    clear: both;
+    width: 416px;
+  }
+
 }
 
 #grid {
@@ -170,6 +175,7 @@ figure {
   right: 0;
   display: none;
   font-size: 10px;
+  background: @ltgray;
 
   &.js-show {
     z-index: 1010;

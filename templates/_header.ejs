@@ -16,27 +16,36 @@
 </head>
 <body>
 
-  <header id="head">
+  <header>
     <h1><a href="/">Gifly</a></h1>
-    <section id="search">
-      <a href="#">?</a>
-      <form action="/search">
-        <input type="text" name="results">
-        <input type="submit" value="Submit" style="display:none;">
-      </form>
-    </section>
 
-    <div class="user-nav" id="slide" style="left: -38px; ">
-      <a href="/user/wookiehangover" id="login-link">profile</a>
-    </div>
+    <nav>
+      <% if(typeof user !== 'undefined' ){ %>
 
-    <div class="user-nav" style="left: -38px; ">
-      <a href="/gif.new" id="upload-link">upload</a>
-    </div>
+        <div class="user-nav">
+          <a href="/profile" id="login-link">profile</a>
+        </div>
 
-    <div class="user-nav" id="slide">
-      <a href="/logout" id="logout-link">logout</a>
-    </div>
+        <div class="user-nav">
+          <a href="#" data-action='upload'>upload</a>
+        </div>
+
+        <div class="user-nav" id="slide">
+          <a href="/logout" id="logout-link">logout</a>
+        </div>
+
+      <% } else { %>
+
+        <div class="user-nav">
+          <a href="/login" id="login-link">profile</a>
+        </div>
+
+        <div class="user-nav create">
+          <a href="/signup" id="signup-link">signup</a>
+        </div>
+
+      <% } %>
+    </nav>
   </header>
 
   <div id="loader">Loading...</div>

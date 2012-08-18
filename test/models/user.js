@@ -5,17 +5,20 @@ var
   fixtures = require('../fixtures'),
   assert   = require('assert');
 
+var redis = require('redis');
+var client = redis.createClient();
+
 describe('User Model', function(){
 
   var userData = fixtures.userData;
 
   beforeEach(function(){
-    this.user = User();
+    this.user = User( client );
     this.userData = fixtures.userData();
   });
 
   afterEach(function( done ){
-    this.user.client.del( 'user:wookiehangover', function(err){
+    this.user.client.del( 'user:wookiehangoverdafadsf', function(err){
       if( err ) throw new Error(err);
       done();
     });
@@ -87,7 +90,7 @@ describe('User Model', function(){
     var self = this;
     self.user.storePassword = function(){};
     self.user.create(this.userData, function(err, res){
-      self.user.get('wookiehangover', function(err, res){
+      self.user.get('wookiehangoverdafadsf', function(err, res){
         assert.ok( !res.password );
         assert.ok( !res.salt );
         done();

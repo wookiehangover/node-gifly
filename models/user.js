@@ -1,13 +1,15 @@
-module.exports = function(){ return new User(); };
+module.exports = function( c ){ return new User(c); };
 var crypto = require('crypto');
 var redis = require('redis');
 var bcrypt = require('bcrypt');
-var config = require('../config');
 
-function User( options ){
-  var r = config.redis;
-  this.client = exports.client = redis.createClient(r.port, r.host, r);
-  if( r.auth ) this.client.auth(r.auth);
+function User( client ){
+  if( !client ){
+    console.log(client)
+    throw new Error('You must provide a redis client instance');
+  }
+
+  this.client = client;
 
   this.client.on('error', function( err ){
     console.error('Redis Error: '+ err);
@@ -54,8 +56,6 @@ fn.create = function( data, cb ){
 fn.get = function( username, cb ){
   this.client.hgetall( 'user:' + username, function( err, res ){
     var user = res;
-    delete user.salt;
-    delete user.password;
     cb( err, user );
   });
 };

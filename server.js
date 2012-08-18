@@ -10,10 +10,6 @@ var decorate = require('./decorators');
 
 RedSess.createClient(config.redis);
 
-var r = config.redis;
-config.redis.client = redis.createClient(r.port, r.host, r);
-if( r.auth ) config.redis.client.auth(r.auth);
-
 var server = http.createServer(function( req, res ){
   decorate(req, res);
   router.dispatch(req, res);
@@ -28,19 +24,21 @@ engine( server );
 
 var worker = fork( require('path').resolve(__dirname + '/processor.js'));
 
-process.on('close', function closeAll(){
+process.on('exit', function closeAll(){
 
   worker.exit(0);
 
   RedSess.close();
 
-  try { config.redis.client.quit(); } catch (e) {
-    console.error('error quitting redis client', e);
-  }
-
   try { engine.client.quit(); } catch (e) {
     console.error('error quitting redis client', e);
+    engine.client.close();
   }
 
 });
+
+process.on('uncaughtException', function(e){
+  console.error(e);
+});
+
 

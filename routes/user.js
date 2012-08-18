@@ -1,8 +1,8 @@
 var User = require('../models/user');
 var qs = require('querystring');
-var user = User();
 
-module.exports = function( router ){
+module.exports = function( router, client ){
+  var user = User( client );
 
   router.add('login', function( req, res ){
     res.template('login.ejs', {});

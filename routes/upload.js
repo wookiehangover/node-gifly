@@ -1,31 +1,36 @@
 var fs = require('fs');
 var crypto = require('crypto');
 var formidable = require('formidable');
-var media = require('../models/media');
+var MediaModel = require('../models/media');
 var config = require('../config');
 
-function upload(req, res){
+module.exports = function( router, client ){
 
-  if( req.method !== 'POST' ){
-    return res.error(405);
-  }
+  var media = MediaModel(client);
 
-  var form = new formidable.IncomingForm({
-    uploadDir: config.tmpDir
-  });
+  router.add('upload', function upload(req, res){
 
-  form.parse( req, function( err, fields, files){
-    var file = files.files;
-    var data = fields;
+    if( req.method !== 'POST' ){
+      return res.error(405);
+    }
 
-    data.filename = file.name;
-    data.id = file.name + file.size;
+    var form = new formidable.IncomingForm({
+      uploadDir: config.tmpDir
+    });
 
+    form.parse( req, function( err, fields, files){
+      var file = files.files;
+      var data = fields;
 
-    req.session.get(function(err, sess){
-      if(sess && sess.auth){
+      data.filename = file.name;
+      data.id = file.name + file.size;
+
+      req.session.get(function(err, sess){
+        if(sess && sess.auth){
+          data.user = sess.auth.username;
+        }
+
         data.status = 'processing';
-        data.user = sess.auth.username;
         var fileHash = crypto.createHash('md5');
         fileHash.update( JSON.stringify( data ) );
         data.hash = fileHash.digest('hex').slice(0,8);
@@ -35,22 +40,20 @@ function upload(req, res){
             return res.json(err, 500);
           }
 
-          media.client.publish('uploads:process', JSON.stringify({
+          client.publish('uploads:process', JSON.stringify({
             file: file,
             data: data
           }));
 
-          media.client.set('hash:'+ data.hash, data.id);
+          client.set('hash:'+ data.hash, data.id);
 
           res.json(data, 201);
         });
-      }
+      });
+
     });
 
   });
 
-}
 
-module.exports = function( router ){
-  router.add('upload', upload);
 };

@@ -1,22 +1,24 @@
 <%- include _header.ejs %>
-<h1>Create Account</h1>
-<form action="/user/new" method="POST">
-  <div class="form-row">
-    <label for=username>Username</label>
-    <input type=text name=username />
-  </div>
-  <div class="form-row">
-    <label for=email>Email</label>
-    <input type=text name=email />
-  </div>
-  <div class="form-row">
-    <label for=password>Password</label>
-    <input type=password name=password />
-  </div>
-  <div class="form-row">
-    <label for=password>Confirm Password</label>
-    <input type=password name=confirmation />
-  </div>
-  <button>Submit</button>
-</form>
+<div class="container">
+  <h1>sign up. upload gifs.</h1>
+  <form action="/user/new" method="POST">
+    <div class="form-row">
+      <label for=username>Username</label>
+      <input type=text name=username />
+    </div>
+    <div class="form-row">
+      <label for=email>Email</label>
+      <input type=text name=email />
+    </div>
+    <div class="form-row">
+      <label for=password>Password</label>
+      <input type=password name=password />
+    </div>
+    <div class="form-row">
+      <label for=password>Confirm Password</label>
+      <input type=password name=confirmation />
+    </div>
+    <button>Submit</button>
+  </form>
+</div>
 <%- include _footer.ejs %>
