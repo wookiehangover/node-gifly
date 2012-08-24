@@ -47,7 +47,7 @@ function decorator( req, res ){
   };
 
   res.send = function (data, status, headers) {
-    res.statusCode = res.statusCode || status;
+    res.statusCode = status || res.statusCode;
     if (headers) Object.keys(headers).forEach(function (h) {
       res.setHeader(h, headers[h]);
     });

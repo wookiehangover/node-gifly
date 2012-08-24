@@ -6,7 +6,6 @@ var bcrypt = new PasswordHash( 8 );
 
 function User( client ){
   if( !client ){
-    console.log(client)
     throw new Error('You must provide a redis client instance');
   }
 

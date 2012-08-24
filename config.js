@@ -10,6 +10,8 @@ exports.s3 = {
   bucket: 'i.wookiehangover.com'
 }
 
+exports.mods = ['wookiehangover'];
+
 // redis auth 
 exports.redis = { host: '127.0.0.1', port: 6379 }
 

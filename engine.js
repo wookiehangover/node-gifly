@@ -24,9 +24,8 @@ function Engine( server ){
     uploads.on('message', onMessage);
 
     socket.on('close', function(){
-      console.log('connection closed');
+      console.log('socket connection closed');
       uploads.removeListener('message', onMessage);
-      console.log(uploads.listeners('message').length);
     });
 
   });

@@ -5,6 +5,7 @@ var knox = require('knox');
 var redis = require('redis');
 var crypto = require('crypto');
 var config = require('./config');
+var Media = require('./models/media');
 
 var _def = require('underscore.deferred');
 var def = _def.Deferred;
@@ -30,6 +31,8 @@ var r = config.redis;
 var uploads = redis.createClient(r.port, r.host, r);
 if( r.auth ) uploads.auth(r.auth);
 
+
+var media = new Media( client );
 
 
 uploads.subscribe('uploads:process');
@@ -92,12 +95,14 @@ function Processr( file, data ){
     self.cleanup();
   }, function(){
     // TODO: cleanup redis records on failure
+    media.del( this.data );
     self.cleanup();
   });
 }
 
 Processr.prototype.cleanup = function(){
 
+  console.log('cleaning up: '+ this.tmp_files);
   this.tmp_files.forEach(function(file){
     fs.unlink( file, function(err){
       if( err ){

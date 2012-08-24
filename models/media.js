@@ -35,6 +35,27 @@ module.exports = function( client ){
     });
   }
 
+  model.get = function( key, cb ){
+    client.hmget('upload:'+ key, 'cover_url', cb);
+  };
+
+  model.getAll = function( params, cb ){
+    var multi = client.multi();
+
+    var per_page = params && params.per_page ? params.per_page : 12;
+    var page = params && params.p > 1 ? params.p : 1;
+    var end = page * per_page;
+    var start = end - per_page;
+
+    client.zrevrange('uploads:global', start, end, function(err, set){
+      set.forEach(function(upload){
+        multi.hgetall(upload);
+      });
+
+      multi.exec(cb);
+    });
+  };
+
   model.create = function( data, cb ){
     data.createdAt = data.modifiedAt = +new Date();
     save( data, cb );
@@ -45,6 +66,17 @@ module.exports = function( client ){
     save( data, cb );
   };
 
+  model.del = function( data, cb ){
+
+    var multi = client.multi();
+
+    multi.del( 'upload:'+ data.id );
+    multi.del('gif:'+ data.hash);
+    multi.zrem( 'uploads:global', 'upload:'+ data.id);
+
+    multi.exec(cb);
+
+  };
 
   return model;
 
