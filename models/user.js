@@ -1,7 +1,8 @@
 module.exports = function( c ){ return new User(c); };
 var crypto = require('crypto');
 var redis = require('redis');
-var bcrypt = require('bcrypt');
+var PasswordHash = require('phpass').PasswordHash;
+var bcrypt = new PasswordHash( 8 );
 
 function User( client ){
   if( !client ){
@@ -81,27 +82,20 @@ fn.update = function( data, cb ){
 fn.storePassword = function(username, password, cb){
   var self = this;
 
-  bcrypt.hash( password, 8, function(err, hash){
+  var hash = bcrypt.hashPassword( password );
+
+  this.update({ username: username, password: hash }, function(err, status, data){
 
     if( err ){
-      console.log('Error creating hash: '+ err);
+      console.error('Error storing password: '+ err);
       console.trace();
-      return;
     }
 
-    self.update({ username: username, password: hash }, function(err, status, data){
-
-      if( err ){
-        console.error('Error storing password: '+ err);
-        console.trace();
-      }
-
-      if( cb ){
-        cb( err, status, data );
-      }
-    });
-
+    if( cb ){
+      cb( err, status, data );
+    }
   });
+
 };
 
 fn.authenticate = function( username, password, cb ){
@@ -119,14 +113,13 @@ fn.authenticate = function( username, password, cb ){
     }
 
     var hash = res.password;
+    var auth = bcrypt.checkPassword( password, hash );
 
-    bcrypt.compare( password, hash, function( err, auth ){
-      delete res.password;
+    delete res.password;
 
-      return auth ?
-        cb( null, res ) :
-        cb('Authentication Failure');
-    });
+    return auth ?
+      cb( null, res ) :
+      cb('Authentication Failure');
   });
 
 };

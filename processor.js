@@ -256,10 +256,11 @@ Processr.prototype.enhance = function( stream ){
   return dfd.promise();
 };
 
-process.on('close', function(){
+process.on('exit', function(){
 
   try { client.quit(); } catch (e) {
     console.error('error quitting redis client', e);
+    client.close();
   }
 
 });

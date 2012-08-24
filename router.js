@@ -14,7 +14,7 @@ var router = module.exports = ramrod();
 
 var r = config.redis;
 var client = redis.createClient(r.port, r.host, r);
-if( r.auth )client.auth(r.auth);
+if( r.auth ) client.auth(r.auth);
 
 //
 // Media Model Routes
