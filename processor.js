@@ -262,6 +262,10 @@ Processr.prototype.enhance = function( stream ){
   return dfd.promise();
 };
 
+process.on('uncaughtException', function(e){
+  console.error(e);
+});
+
 process.on('exit', function(){
 
   try { client.quit(); } catch (e) {
