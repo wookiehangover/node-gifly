@@ -1,3 +1,4 @@
+/*jshint latedef: false, newcap: false, curly: false */
 module.exports = decorator;
 var config = require('./config');
 
@@ -39,9 +40,9 @@ function decorator( req, res ){
     if (mt === 'application/json') {
       res.json({ redirect: target, statusCode: code });
     } else {
-      res.html( '<html><body><h1>Moved'
-              + (code === 302 ? ' Permanently' : '') + '</h1>'
-              + '<a href="' + target + '">' + target + '</a>');
+      res.html( '<html><body><h1>Moved' +
+               (code === 302 ? ' Permanently' : '') + '</h1>' +
+               '<a href="' + target + '">' + target + '</a>');
     }
   };
 

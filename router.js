@@ -1,3 +1,4 @@
+/*jshint curly: false */
 var config = require('./config');
 var ramrod = require('ramrod');
 var redis = require('redis');

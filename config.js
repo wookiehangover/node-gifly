@@ -1,4 +1,4 @@
-/*jshint asi:true */
+/*jshint asi:true, curly: false */
 exports.host = 'localhost'
 exports.port = process.env.PORT || 3000
 

@@ -1,3 +1,4 @@
+/*jshint latedef: false, curly: false */
 module.exports = Engine;
 
 var engine = require('engine.io');

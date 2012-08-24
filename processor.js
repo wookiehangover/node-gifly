@@ -1,3 +1,4 @@
+/*jshint latedef: false, curly: false */
 var fs = require('fs');
 var gm = require('gm');
 var knox = require('knox');
@@ -91,7 +92,7 @@ function Processr( file, data ){
     self.cleanup();
   }, function(){
     // TODO: cleanup redis records on failure
-    self.cleanup()
+    self.cleanup();
   });
 }
 

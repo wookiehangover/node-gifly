@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     pkg: '<json:package.json>',
 
     lint: {
-      files: ['grunt.js', 'app']
+      files: ['grunt.js', 'app/**/*.js', 'routes/**.*.js', 'models/**.*.js', '*.js']
     },
     qunit: {
       files: ['test/**/*.html']
@@ -29,7 +29,7 @@ module.exports = function(grunt) {
       options: {
         curly: true,
         eqeqeq: true,
-        immed: true,
+        immed: false,
         latedef: true,
         newcap: true,
         noarg: true,
@@ -37,10 +37,15 @@ module.exports = function(grunt) {
         undef: true,
         boss: true,
         eqnull: true,
-        browser: true
+        browser: true,
+        node: true,
+        jQuery: true,
+        expr: true
       },
       globals: {
-        jQuery: true
+        Modernizr: true,
+        define: true,
+        $: true
       }
     },
     uglify: {}
