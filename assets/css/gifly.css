@@ -898,6 +898,7 @@ body {
 }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
   /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
 
 }
@@ -913,10 +914,9 @@ figure {
 header {
   position: fixed;
   float: left;
-  width: 188px;
-  padding-right: 12px;
   left: 0px;
-  top: 40px;
+  top: 60px;
+  z-index: 1010;
 }
 header h1 {
   display: block;
@@ -935,7 +935,6 @@ header h1 a {
   height: 100%;
 }
 header nav .user-nav {
-  z-index: 1010;
   float: left;
   clear: both;
   -webkit-border-radius: 0 3px 3px 0;
@@ -986,20 +985,49 @@ header nav .user-nav #signup-link {
 header nav .user-nav [data-action=upload] {
   background-position: 45px -97px;
 }
-.container {
-  padding-left: 80px;
-}
-.container h1 {
+h1 {
   background: #e6e6e6;
   float: left;
+  margin-top: 0;
+  padding: 0 6px;
 }
-.container form {
+form {
   float: left;
   clear: both;
   width: 416px;
+  padding-left: 80px;
+  font-size: 12px;
+}
+form .form-row {
+  float: left;
+  clear: both;
+  width: 100%;
+  margin-bottom: 10px;
+}
+form .form-row label {
+  float: left;
+  width: 120px;
+  padding-top: 8px;
+}
+form .form-row input[type=text],
+form .form-row input[type=password] {
+  float: left;
+  background: #e6e6e6;
+  border: 0;
+  border-bottom: 1px solid #555555;
+  padding: 8px;
+  width: 220px;
+}
+form input[type=submit] {
+  float: left;
+  clear: both;
 }
 #grid {
   height: 100%;
+  float: left;
+  clear: both;
+  width: 96%;
+  padding-left: 60px;
 }
 #grid .row {
   margin-left: -20px;

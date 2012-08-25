@@ -52,7 +52,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint');
+  grunt.registerTask('default', 'lint less');
   grunt.loadNpmTasks('grunt-contrib');
 
 };
