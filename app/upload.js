@@ -31,34 +31,70 @@ define([
     e.preventDefault();
 
     var self = this;
+    var I_AM_GIF = /gif/;
     var fileList = e.dataTransfer.files;
 
     if( fileList.length ){
       $('#loader').addClass('js-show');
     }
 
-    var dfds = _.map(fileList, function( file ){
+    // Map iterator
+    //
+    // Return a Promise (via $.ajax)
+
+    function upload( fd ){
+
+      if( !I_AM_GIF.test( fd.type ) ){
+        return;
+      }
+
+      var reader = new FileReader();
+      var dfd = $.Deferred();
       var form = new FormData();
+      form.append('files', fd);
 
-      form.append('files', file);
+      reader.onload = function( e ){
+        var file = e.target.result;
+        var arr = new Uint8Array(file);
+        var length = arr.length;
+        var frames = 0;
 
-      var dfd = $.ajax({
-        url: "/upload",
-        type: "post",
-        cache: false,
-        processData: false,
-        contentType: false,
-        data: form
-      });
+        for(var i = 0, len = length - 9; i < len && frames < 2; i++ ){
 
-      dfd.done(function( data ){
-        self.view.collection.add( data );
-      });
+          if (arr[i] === 0x00 && arr[i+1] === 0x21 &&
+            arr[i+2] === 0xF9 && arr[i+3] === 0x04 &&
+            arr[i+8] === 0x00 && 
+            (arr[i+9] === 0x2C || arr[i+9] === 0x21)) {
+            frames++;
+          }
+        }
 
-      return dfd;
-    });
+        if( frames < 2 ){
+          dfd.reject();
+          return;
+        }
 
-    $.when.apply(null, dfds).done(function(){
+        $.ajax({
+          url: "/upload",
+          type: "post",
+          cache: false,
+          processData: false,
+          contentType: false,
+          data: form
+        }).then(function( data ){
+          dfd.resolve();
+          self.view.collection.add( data );
+        }, function(){
+          dfd.reject();
+        });
+
+      };
+
+      reader.readAsArrayBuffer( fd );
+      return dfd.promise();
+    }
+
+    $.when.apply( null, _.map(fileList, upload) ).always(function(){
       $('#loader').removeClass('js-show');
     });
   };
