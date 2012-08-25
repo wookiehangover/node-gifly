@@ -2,6 +2,7 @@
 var _      = require('underscore.deferred');
 var fs     = require('fs');
 var gm     = require('gm');
+var url    = require('url');
 var knox   = require('knox');
 var redis  = require('redis');
 var crypto = require('crypto');
@@ -14,44 +15,33 @@ var tmpDir = config.tmpDir;
 var s3 = knox.createClient( config.s3 );
 
 var r = config.redis;
-var client = exports.client = redis.createClient(r.port, r.host, r);
+var client = redis.createClient(r.port, r.host, r);
 if( r.auth ) client.auth(r.auth);
 
 client.on('error', function(err){
   console.log('Redis Error: '+ err);
 });
 
-//
-// Subscribe to Redis queue for uploads to process
-//
 
-var r = config.redis;
-var uploads = redis.createClient(r.port, r.host, r);
-if( r.auth ) uploads.auth(r.auth);
+client.on('connect',function(){
+
+  setInterval(function(){
+    client.rpop('queue:gifs', function(err, message){
+      if( err ){
+        console.error( err );
+        console.trace();
+      }
+
+      if( message ){
+        var data = JSON.parse(message);
+        new Processr( data.file, data.data );
+      }
+    });
+  }, 500);
+
+});
 
 var media = new Media( client );
-
-
-// uploads.subscribe('uploads:process');
-
-// uploads.on('message', function(channel, message){
-//   var data = JSON.parse(message);
-//   new Processr( data.file, data.data );
-// });
-
-setInterval(function(){
-  client.rpop('queue:gifs', function(err, message){
-    if( err ){
-      console.error( err );
-      console.trace();
-    }
-
-    if( message ){
-      var data = JSON.parse(message);
-      new Processr( data.file, data.data );
-    }
-  });
-}, 500);
 
 //
 // Processr
@@ -61,6 +51,8 @@ function Processr( file, data ){
   var self = this;
 
   console.log('Processing: ', data);
+
+  console.log(file);
 
   this.file = file;
   this.data = data;
@@ -161,7 +153,9 @@ Processr.prototype.upload = function( path, stream, headers ){
     }
 
     res.on('end', function(){
-      data.url = res.req.url.replace(/https?:/, '');
+      data.url = res.req.url
+        .replace(/https?:/, '')
+        .replace(/\.s3\.amazonaws\.com/, '');
       data.status = 'uploaded';
       data.modifiedAt = +new Date();
 
@@ -235,6 +229,8 @@ Processr.prototype.enhance = function( stream ){
         dfd.reject();
         return;
       }
+
+      var path = self.data.filename.replace(/\.s3\.amazonaws\.com/, '');
 
       s3.putFile( filepath, 'cv_'+self.data.filename, onUpload);
     });

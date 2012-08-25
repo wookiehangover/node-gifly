@@ -1,7 +1,7 @@
 #!/bin/sh
 
 curl -ssl https://s3.amazonaws.com/wookie-buildpack/config.admin.js -O ../config.admin.js
-curl -ssl https://s3.amazonaws.com/wookie-buildpack/config.development.js -O ../config.dev.js
+curl -ssl https://s3.amazonaws.com/wookie-buildpack/config.dev.js -O ../config.dev.js
 
 mkdir -p tmp
 

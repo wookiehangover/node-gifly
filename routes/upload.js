@@ -49,7 +49,7 @@ module.exports = function( router, client ){
 
           multi.set('hash:'+ data.hash, data.id);
 
-          multi.exec(function(err){
+          multi.exec(function(err, result){
             if( err ){
               console.error(err);
               console.trace();

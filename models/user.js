@@ -29,13 +29,6 @@ fn.create = function( data, cb ){
     delete user.confirmation;
   }
 
-  if( user.password ){
-    this.storePassword( user.username, user.password );
-    delete user.password;
-  } else {
-    return cb('Must provide a password');
-  }
-
   if( !user.email ){
     return cb('Must provide an email');
   }
@@ -44,10 +37,20 @@ fn.create = function( data, cb ){
 
   user.status = 'unconfirmed';
 
+
   this.client.exists( 'user:'+ user.username, function( err, res ){
+
     if( res === 1 ){
       cb('You must provide a unique username');
     } else {
+
+      if( user.password ){
+        self.storePassword( user.username, user.password );
+        delete user.password;
+      } else {
+        return cb('Must provide a password');
+      }
+
       self.update( user, cb );
     }
   });
