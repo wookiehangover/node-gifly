@@ -72,7 +72,7 @@ define([
 
       $window.on('scroll', _.debounce(function(){
         if( !last_page &&
-            $window.scrollTop() + $window.height() >= self.$el.height() - 100 ){
+            $window.scrollTop() + $window.height() >= self.$el.height() - 300 ){
 
           self.collection.current_page += 1;
 
@@ -85,7 +85,7 @@ define([
             self.collection.add(results);
           });
         }
-      },250));
+      },100));
     }
 
   });
