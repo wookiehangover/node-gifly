@@ -1,23 +1,21 @@
 /*jshint latedef: false, curly: false */
-var fs = require('fs');
-var gm = require('gm');
-var knox = require('knox');
-var redis = require('redis');
+var _      = require('underscore.deferred');
+var fs     = require('fs');
+var gm     = require('gm');
+var knox   = require('knox');
+var redis  = require('redis');
 var crypto = require('crypto');
 var config = require('./config');
-var Media = require('./models/media');
+var Media  = require('./models/media');
 
-var _def = require('underscore.deferred');
-var def = _def.Deferred;
+var def = _.Deferred;
+var tmpDir = config.tmpDir;
 
 var s3 = knox.createClient( config.s3 );
 
 var r = config.redis;
 var client = exports.client = redis.createClient(r.port, r.host, r);
 if( r.auth ) client.auth(r.auth);
-
-
-var tmpDir = config.tmpDir;
 
 client.on('error', function(err){
   console.log('Redis Error: '+ err);
@@ -31,47 +29,29 @@ var r = config.redis;
 var uploads = redis.createClient(r.port, r.host, r);
 if( r.auth ) uploads.auth(r.auth);
 
-
 var media = new Media( client );
 
 
-uploads.subscribe('uploads:process');
+// uploads.subscribe('uploads:process');
 
-uploads.on('message', function(channel, message){
-  var data = JSON.parse(message);
-  new Processr( data.file, data.data );
-});
+// uploads.on('message', function(channel, message){
+//   var data = JSON.parse(message);
+//   new Processr( data.file, data.data );
+// });
 
-//
-// Save the upload model data as a Redis hash
-//
-
-function save( data, cb ){
-  var err_msg;
-  if( !data.id ){
-    err_msg = "You must provide an ID";
-  }
-  if( err_msg !== undefined ){
-    return cb( err_msg );
-  }
-
-  var hash = [ 'upload:'+ data.id ];
-
-  for(var i in data){
-    if( data.hasOwnProperty(i) ){
-      hash.push(i);
-      hash.push(data[i]);
-    }
-  }
-
-  client.hmset(hash, function(err, status){
+setInterval(function(){
+  client.rpop('queue:gifs', function(err, message){
     if( err ){
-      console.error(err);
+      console.error( err );
       console.trace();
     }
-    cb(err, status, data);
+
+    if( message ){
+      var data = JSON.parse(message);
+      new Processr( data.file, data.data );
+    }
   });
-}
+}, 500);
 
 //
 // Processr
@@ -91,7 +71,7 @@ function Processr( file, data ){
     return self[fn]();
   });
 
-  _def.when.apply(null, this.queue).then(function(){
+  _.when.apply(null, this.queue).then(function(){
     self.cleanup();
   }, function(){
     // TODO: cleanup redis records on failure
@@ -139,7 +119,7 @@ Processr.prototype.hash = function( stream ){
     fileHash.update( buf );
     data.filehash = fileHash.digest('hex').slice(0,8);
 
-    save( data, function(err, status, media){
+    media.save( data, function(err, status, media){
       if( err ){
         console.error('Error hashing:'+ err);
         console.trace();
@@ -187,7 +167,7 @@ Processr.prototype.upload = function( path, stream, headers ){
 
       self.tmp_files.push( self.file.path );
 
-      save( data, function(err, status, media){
+      media.save( data, function(err, status, media){
         dfd.resolve();
         client.publish('uploads', JSON.stringify(media));
         client.zadd('uploads:global', media.createdAt, 'upload:'+ media.id );
@@ -234,7 +214,7 @@ Processr.prototype.enhance = function( stream ){
 
       self.tmp_files.push( filepath );
 
-      save( data, function(err, status, media){
+      media.save( data, function(err, status, media){
         if( err ){
           console.error(err);
           console.trace();
@@ -261,6 +241,10 @@ Processr.prototype.enhance = function( stream ){
 
   return dfd.promise();
 };
+
+//
+// Handle Exceptions and Process Exit
+//
 
 process.on('uncaughtException', function(e){
   console.error(e);

@@ -40,14 +40,25 @@ module.exports = function( router, client ){
             return res.json(err, 500);
           }
 
-          client.publish('uploads:process', JSON.stringify({
+          var multi = client.multi();
+
+          multi.rpush('queue:gifs', JSON.stringify({
             file: file,
             data: data
           }));
 
-          client.set('hash:'+ data.hash, data.id);
+          multi.set('hash:'+ data.hash, data.id);
 
-          res.json(data, 201);
+          multi.exec(function(err){
+            if( err ){
+              console.error(err);
+              console.trace();
+              res.error(500);
+            } else {
+              res.json(data, 201);
+            }
+          });
+
         });
       });
 
