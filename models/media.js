@@ -8,7 +8,7 @@ module.exports = function( client ){
 
   var model = {};
 
-  function save( data, cb ){
+  model.save = function ( data, cb ){
     var err_msg;
     if( !data.id ){
       err_msg = "You must provide an ID";
@@ -58,16 +58,15 @@ module.exports = function( client ){
 
   model.create = function( data, cb ){
     data.createdAt = data.modifiedAt = +new Date();
-    save( data, cb );
+    model.save( data, cb );
   };
 
   model.update = function( data, cb ){
     data.modifiedAt = +new Date();
-    save( data, cb );
+    model.save( data, cb );
   };
 
   model.del = function( data, cb ){
-
     var multi = client.multi();
 
     multi.del( 'upload:'+ data.id );
@@ -75,7 +74,6 @@ module.exports = function( client ){
     multi.zrem( 'uploads:global', 'upload:'+ data.id);
 
     multi.exec(cb);
-
   };
 
   return model;
