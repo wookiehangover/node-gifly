@@ -55,6 +55,7 @@ module.exports = function( router, client ){
               console.trace();
               res.error(500);
             } else {
+              client.publish('uploads', JSON.stringify( data ));
               res.json(data, 201);
             }
           });
