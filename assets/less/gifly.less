@@ -12,6 +12,7 @@ html, body { height: auto; height: 100%; }
 
 body {
   #font > #family > .sans-serif();
+  margin: 0;
   /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
 }
 
@@ -28,10 +29,9 @@ figure {
 header {
   position:fixed;
   float:left;
-  width:188px;
-  padding-right:12px;
   left:0px;
-  top:40px;
+  top:60px;
+  z-index: 1010;
 
   h1 {
     display:block;
@@ -71,7 +71,6 @@ header {
   }
 
   nav .user-nav {
-    z-index: 1010;
     .sub();
     cursor:pointer;
     position:relative;
@@ -98,18 +97,45 @@ header {
 
 }
 
-.container {
-  padding-left: 80px;
+h1 {
+  background: @ltgray;
+  float: left;
+  margin-top: 0;
+  padding: 0 6px;
+}
 
-  h1 {
-    background: @ltgray;
-    float: left;
+form {
+  float: left;
+  clear: both;
+  width: 416px;
+  padding-left: 80px;
+  font-size: 12px;
+
+  .form-row {
+    float: left; clear: both;
+    width: 100%;
+    margin-bottom: 10px;
+
+    label {
+      float: left;
+      width: 120px;
+      padding-top: 8px;
+    }
+
+    input[type=text], input[type=password] {
+      float: left;
+      background: @ltgray;
+      border: 0;
+      border-bottom: 1px solid @gray;
+      padding: 8px;
+      width: 220px;
+    }
+
   }
 
-  form {
+  input[type=submit] {
     float: left;
     clear: both;
-    width: 416px;
   }
 
 }
@@ -117,6 +143,9 @@ header {
 #grid {
   #grid > .core(188px, 20px);
   height: 100%;
+  float: left; clear: both;
+  width: 96%;
+  padding-left: 60px;
 
   article {
     overflow: hidden;
