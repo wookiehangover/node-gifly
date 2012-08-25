@@ -37,8 +37,8 @@ process.on('exit', function closeAll(){
 
 });
 
-process.on('uncaughtException', function(e){
-  console.error(e);
+process.on('uncaughtException', function(err){
+  console.error('Warning: Uncaught Application Exception:' + err, +new Date());
 });
 
 
