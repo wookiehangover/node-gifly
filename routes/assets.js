@@ -3,20 +3,24 @@ var ecstatic   = require('ecstatic');
 var less       = require('less');
 var Url = require('url');
 var config = require('../config');
+var path = require('path');
 
-var ec = ecstatic( __dirname + '/..' );
+var ec = ecstatic( path.resolve(__dirname + '/..') );
 var parser = new less.Parser({
     paths: ['./assets/less'],
     filename: 'streamr.less'
 });
 
+
 function processLess( req, res, filename ){
-  fs.readFile( __dirname + '/../assets/less/'+ filename +'.less', 'utf-8', function( err, data ){
+  var lessPath = path.resolve(__dirname + '/../assets/less/'+ filename +'.less');
+  fs.readFile(lessPath, 'utf-8', function( err, data ){
     if( err ) {
       console.log(err);
       res.writeHead(404);
       res.end();
     }
+
     parser.parse( data, function(err, css ){
       res.writeHead(200, {'Content-Type': 'text/css'});
       var errorMsg;

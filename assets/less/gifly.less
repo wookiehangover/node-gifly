@@ -3,6 +3,7 @@
 @import 'mixins';
 @import 'font-awesome';
 @import 'isotope';
+@import 'markdown';
 
 @ltgray: #E6E6E6;
 
@@ -70,34 +71,38 @@ header {
     }
   }
 
-  nav .user-nav {
-    .sub();
-    cursor:pointer;
-    position:relative;
-    float:left;
-    width:64px;
-    left:-38px;
-    .transition(left 0.3s ease-out);
+  &:hover nav .user-nav {
+    left: 0px;
+  }
+  nav {
+    .user-nav {
+      .sub();
+      cursor:pointer;
+      position:relative;
+      float:left;
+      width:74px;
+      left: -48px;
+      .transition(left 0.3s ease-out);
 
-    &:hover {
-      left: 0;
+      &:hover {
+        background: @grayDark;
+      }
+
+      a {
+        width: 60px;
+        padding: 6px 9px 0 5px;
+      }
+
+      .login-link  { background-position:55px -29px; }
+      .logout-link { background-position:55px -279px;}
+      .signup-link { background-position:55px -65px; }
+      .readme-link { background-position:55px -97px;}
     }
-
-    a {
-      width: 50px;
-      padding: 6px 9px 0 5px;
-    }
-
-    #login-link  { background-position:45px -29px; }
-    #logout-link { background-position:45px -279px;}
-    #signup-link { background-position:45px -65px; }
-    [data-action=upload] { background-position:45px -97px; }
-
   }
 
 }
 
-h1 {
+body > h1 {
   background: @ltgray;
   float: left;
   margin-top: 0;
@@ -140,6 +145,21 @@ form {
     clear: both;
   }
 
+}
+
+section {
+  float:left;
+  clear:both;
+  .markdown();
+  margin-left: 20px;
+  overflow: hidden;
+  height: 0;
+  .transition(all 0.4s ease-in-out);
+
+  &.js-show {
+    margin-bottom: 2em;
+    height: 488px;
+  }
 }
 
 #grid {

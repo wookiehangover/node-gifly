@@ -28,6 +28,11 @@ require([
       collection: media
     });
 
+    $('body > header').on('click', '[data-action="readme"]', function(e){
+      $('body > section').toggleClass('js-show');
+      return false;
+    });
+
     socket.on('message', function(data){
       data = JSON.parse(data);
 

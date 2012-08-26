@@ -1,5 +1,11 @@
 var MediaModel = require('../models/media');
 var config = require('../config');
+var fs = require('fs');
+var path = require('path');
+var markdown = require('markdown').markdown;
+
+var readme = fs.readFileSync( path.resolve(__dirname + '/../readme.md') );
+readme = markdown.toHTML( readme.toString() );
 
 module.exports = function( router, client ){
 
@@ -20,6 +26,7 @@ module.exports = function( router, client ){
 
       media.getAll( params, function( err, results ){
         data.gifs = results;
+        data.readme = readme;
         res.template('index.ejs', data);
       });
 

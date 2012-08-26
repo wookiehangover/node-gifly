@@ -1,5 +1,10 @@
 <%- include _header.ejs %>
 <h1>drop gifs to upload</h1>
+<section>
+  <article>
+  <%- readme %>
+  </article>
+</section>
 <div id="grid">
   <% gifs && gifs.forEach(function(gif){ %>
     <article class="span2">

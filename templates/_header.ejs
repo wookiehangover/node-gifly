@@ -20,28 +20,31 @@
     <h1><a href="/">Gifly</a></h1>
 
     <nav>
+
+      <% if(typeof readme !== 'undefined'){%>
+        <div class="user-nav readme">
+          <a href="#" class="readme-link" data-action="readme">readme</a>
+        </div>
+      <%}%>
+
       <% if(typeof user !== 'undefined' && user ){ %>
 
         <div class="user-nav">
-          <a href="/profile" id="login-link">profile</a>
+          <a href="/profile" class="login-link">profile</a>
         </div>
 
         <div class="user-nav">
-          <a href="#" data-action='upload'>upload</a>
-        </div>
-
-        <div class="user-nav" id="slide">
-          <a href="/logout" id="logout-link">logout</a>
+          <a href="/logout" class="logout-link">logout</a>
         </div>
 
       <% } else { %>
 
         <div class="user-nav">
-          <a href="/login" id="login-link">login</a>
+          <a href="/login" class="login-link">login</a>
         </div>
 
         <div class="user-nav create">
-          <a href="/signup" id="signup-link">signup</a>
+          <a href="/signup" class="signup-link">signup</a>
         </div>
 
       <% } %>
