@@ -38,6 +38,11 @@ module.exports = function( router, client ){
     router.add(/^\/assets\/css\/([^\.]+)\.css$/, 'less', processLess);
   }
 
+  router.add('favicon.ico', function(req, res){
+    req.url = '/assets/img/favicon.ico';
+    ec( req, res );
+  });
+
   // re-route production js assets in dev mode
   router.add('dist/release/*path', function( req, res, file ){
     var url = Url.parse(req.url);
