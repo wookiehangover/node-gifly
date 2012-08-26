@@ -5,12 +5,23 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: '<json:package.json>',
 
+    clean: ["dist"],
+
     lint: {
       files: ['grunt.js', 'app/**/*.js', 'routes/**.*.js', 'models/**.*.js', '*.js']
     },
+
+    concat: {
+      "dist/debug/require.js": [
+        "assets/js/vendor/almond.js",
+        "dist/debug/require.js"
+      ]
+    },
+
     qunit: {
       files: ['test/**/*.html']
     },
+
     less: {
       compile: {
         options: {
@@ -21,10 +32,23 @@ module.exports = function(grunt) {
         }
       }
     },
+
+    requirejs: {
+      compile: {
+        options: {
+          mainConfigFile: "app/config.js",
+          out: "dist/debug/require.js",
+          name: "config",
+          wrap: false
+        }
+      }
+    },
+
     watch: {
       files: '<config:lint.files>',
       tasks: 'lint qunit'
     },
+
     jshint: {
       options: {
         curly: true,
@@ -48,11 +72,16 @@ module.exports = function(grunt) {
         $: true
       }
     },
-    uglify: {}
+
+    min: {
+      "dist/release/require.js": [
+        "dist/debug/require.js"
+      ]
+    }
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint less');
+  grunt.registerTask('default', 'lint clean requirejs concat min less');
   grunt.loadNpmTasks('grunt-contrib');
 
 };
