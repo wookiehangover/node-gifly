@@ -79,6 +79,7 @@ define([
       'click [data-action="play"]': 'play',
       'click [data-action="pause"]': 'pause',
       'click [data-action="fullscreen"]': 'fullScreen',
+      'click [data-action="delete"]': 'destroy',
       'dblclick img': 'fullScreen'
     },
 
@@ -96,7 +97,7 @@ define([
       return this.is_playing ? this.pause() : this.play();
     },
 
-    play: function(){
+    play: function(e){
       var img = this.$('img');
       var url = this.model.get('url');
 
@@ -107,10 +108,15 @@ define([
       img.attr('src', url);
       this.is_playing = true;
 
+      $(e.currentTarget).attr({
+        'data-action': 'pause',
+        'class': 'icon-pause'
+      });
+
       return false;
     },
 
-    pause: function(){
+    pause: function(e){
       var img = this.$('img');
       var url = this.model.get('cover_url');
 
@@ -121,9 +127,23 @@ define([
       img.attr('src', url);
       this.is_playing = false;
 
+      $(e.currentTarget).attr({
+        'data-action': 'play',
+        'class': 'icon-play'
+      });
+
+      return false;
+    },
+
+    destroy: function(e){
+      var self = this;
+      this.model.destroy().done(function(){
+        $('#grid').isotope('remove', self.$el, function(){
+          self.remove();
+        });
+      });
       return false;
     }
-
 
   });
 
