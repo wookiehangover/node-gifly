@@ -44,13 +44,15 @@ define([
         self.full_img.src = url;
         self.updateProgress('25%');
 
-        self.loaded = $(self.full_img).imagesLoaded(function(){
+        var dfd = self.loaded = $(self.full_img).imagesLoaded();
+
+        dfd.done(function(){
           timer && clearTimeout( timer );
           self.updateProgress('100%');
           delete self.full_img;
         });
 
-        self.loaded.progress(function(err){
+        dfd.progress && dfd.progress(function(err){
           var p = 50;
           self.updateProgress(p+'%');
 
@@ -60,6 +62,7 @@ define([
             timer = setTimeout(tick, 30);
           }();
         });
+
       });
     },
 
