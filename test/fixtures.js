@@ -42,3 +42,15 @@ exports.userData = function(){
   };
 
 };
+
+exports.upload = {
+  cover_url: "//i.gif.ly.s3.amazonaws.com/cv_v5DFi.gif",
+  createdAt: "1345881511515",
+  filehash: "c7f0a0fc",
+  filename: "v5DFi.gif",
+  hash: "9c6ed06d",
+  id: "v5DFi.gif10399",
+  modifiedAt: "1345881512290",
+  status: "uploaded",
+  url: "//i.gif.ly/9c6ed06d.gif"
+};

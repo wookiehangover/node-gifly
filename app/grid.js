@@ -25,13 +25,14 @@ define([
 
       this.collection.view = this;
 
-      this.collection.on('add', function( model ){
+      this.collection.on('add', function( m ){
+        var model = this.collection.getByCid( m.cid );
         model.view = new Cell({ model: model });
 
         if( model.get('cover_url') ){
           model.view.addToGrid();
         }
-      });
+      }, this);
 
       this.collection.fetch().done(function( collection ){
 

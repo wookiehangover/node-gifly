@@ -18,6 +18,10 @@ require([
 
   $(function(){
 
+    if( Modernizr.touch ){
+      scrollTo(0,1);
+    }
+
     var media = new MediaCollection();
     var grid = window.Grid = new Grid({
       socket: socket,

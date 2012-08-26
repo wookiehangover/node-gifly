@@ -12,7 +12,7 @@ html, body { height: auto; height: 100%; }
 
 body {
   #font > #family > .sans-serif();
-  margin: 0;
+  margin: 0 0 0 60px;
   /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
 }
 
@@ -40,7 +40,7 @@ header {
     position: relative;
     background: url(/assets/img/logo_side.gif) no-repeat top left;
     text-indent:-2000em;
-    margin-bottom: 0;
+    margin: 0 0;
     .size(27px,45px);
 
     a {
@@ -101,6 +101,7 @@ h1 {
   background: @ltgray;
   float: left;
   margin-top: 0;
+  margin-left: 20px;
   padding: 0 6px;
 }
 
@@ -108,7 +109,7 @@ form {
   float: left;
   clear: both;
   width: 416px;
-  padding-left: 80px;
+  padding-left: 20px;
   font-size: 12px;
 
   .form-row {
@@ -129,6 +130,7 @@ form {
       border-bottom: 1px solid @gray;
       padding: 8px;
       width: 220px;
+      -webkit-appearance:none;
     }
 
   }
@@ -143,9 +145,8 @@ form {
 #grid {
   #grid > .core(188px, 20px);
   height: 100%;
+  width: 100%;
   float: left; clear: both;
-  width: 96%;
-  padding-left: 60px;
 
   article {
     overflow: hidden;
@@ -239,11 +240,33 @@ form {
 }
 
 @media all and (max-height: 480px){
-  #head h1 {
+
+  body { margin: 0; }
+
+  h1 { width: 100%; text-align: center; margin-left: 0; padding: 4px 0; }
+
+  header h1 {
     .rotate(-90deg);
-    margin-left: -9px;
-    margin-bottom: 10px;
+    margin-left:-5px;
+    margin-bottom: 5px;
   }
 
-  #grid article.span2 { width: 320px; }
+
+  form {
+    padding-left: 30px;
+    width: 290px;
+    .form-row {
+      input[type=text], input[type=password] {
+        clear: both;
+        width: 250px;
+      }
+    }
+  }
+
+  #grid {
+    padding: 0;
+    article.span2 { width: 290px; }
+    a.icon-fullscreen { display: none ;}
+  }
+
 }
