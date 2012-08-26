@@ -898,7 +898,7 @@ body {
 }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin: 0;
+  margin: 0 0 0 60px;
   /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
 
 }
@@ -925,7 +925,7 @@ header h1 {
   position: relative;
   background: url(/assets/img/logo_side.gif) no-repeat top left;
   text-indent: -2000em;
-  margin-bottom: 0;
+  margin: 0 0;
   width: 45px;
   height: 27px;
 }
@@ -989,13 +989,14 @@ h1 {
   background: #e6e6e6;
   float: left;
   margin-top: 0;
+  margin-left: 20px;
   padding: 0 6px;
 }
 form {
   float: left;
   clear: both;
   width: 416px;
-  padding-left: 80px;
+  padding-left: 20px;
   font-size: 12px;
 }
 form .form-row {
@@ -1017,6 +1018,7 @@ form .form-row input[type=password] {
   border-bottom: 1px solid #555555;
   padding: 8px;
   width: 220px;
+  -webkit-appearance: none;
 }
 form input[type=submit] {
   float: left;
@@ -1024,10 +1026,9 @@ form input[type=submit] {
 }
 #grid {
   height: 100%;
+  width: 100%;
   float: left;
   clear: both;
-  width: 96%;
-  padding-left: 60px;
 }
 #grid .row {
   margin-left: -20px;
@@ -1246,16 +1247,40 @@ form input[type=submit] {
   }
 }
 @media all and (max-height: 480px) {
-  #head h1 {
+  body {
+    margin: 0;
+  }
+  h1 {
+    width: 100%;
+    text-align: center;
+    margin-left: 0;
+    padding: 4px 0;
+  }
+  header h1 {
     -webkit-transform: rotate(-90deg);
     -moz-transform: rotate(-90deg);
     -ms-transform: rotate(-90deg);
     -o-transform: rotate(-90deg);
     transform: rotate(-90deg);
-    margin-left: -9px;
-    margin-bottom: 10px;
+    margin-left: -5px;
+    margin-bottom: 5px;
+  }
+  form {
+    padding-left: 30px;
+    width: 290px;
+  }
+  form .form-row input[type=text],
+  form .form-row input[type=password] {
+    clear: both;
+    width: 250px;
+  }
+  #grid {
+    padding: 0;
   }
   #grid article.span2 {
-    width: 320px;
+    width: 290px;
+  }
+  #grid a.icon-fullscreen {
+    display: none ;
   }
 }
