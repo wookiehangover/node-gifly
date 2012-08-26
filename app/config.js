@@ -26,7 +26,10 @@ require.config({
 
     "vendor/engine.io": {
       exports: "eio"
-    }
+    },
+
+    "plugins/jquery.deparam": [],
+    "plugins/jquery.isotope": []
 
   }
 });
