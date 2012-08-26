@@ -6,11 +6,19 @@ var
   assert   = require('assert');
 
 var redis = require('redis');
-var client = redis.createClient();
+var client;
 
 describe('User Model', function(){
 
   var userData = fixtures.userData;
+
+  before(function(){
+     client = redis.createClient();
+  });
+
+  after(function(){
+    client.quit();
+  });
 
   beforeEach(function(){
     this.user = User( client );

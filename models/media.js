@@ -1,10 +1,38 @@
+module.exports = media;
 var config = require('../config');
 var fs = require('fs');
 var knox = require('knox');
 
 var s3 = knox.createClient( config.s3 );
 
-module.exports = function( client ){
+media.createHash = function( hash, data ){
+  var no_ws = /^\S+$/;
+  var digit = /^\d+$/;
+
+  var schema = {
+    cover_url: no_ws,
+    createdAt: digit,
+    filehash: no_ws,
+    filename: no_ws,
+    hash: no_ws,
+    id: no_ws,
+    modifiedAt: digit,
+    status: /\w+/,
+    url: no_ws,
+    user: no_ws
+  };
+
+  Object.keys( data ).forEach(function( i ){
+    if( i in schema && schema[i].test( data[i] ) ){
+      hash.push( i );
+      hash.push( data[i] );
+    }
+  });
+
+  return hash;
+};
+
+function media( client ){
 
   var model = {};
 
@@ -19,21 +47,14 @@ module.exports = function( client ){
 
     var hash = [ 'upload:'+ data.id ];
 
-    for(var i in data){
-      if( data.hasOwnProperty(i) ){
-        hash.push(i);
-        hash.push(data[i]);
-      }
-    }
-
-    client.hmset(hash, function(err, status){
+    client.hmset(media.createHash( hash, data ), function(err, status){
       if( err ){
         console.error(err);
         console.trace();
       }
       cb(err, status, data);
     });
-  }
+  };
 
   model.get = function( key, cb ){
     client.hmget('upload:'+ key, 'cover_url', cb);
@@ -58,6 +79,7 @@ module.exports = function( client ){
 
   model.create = function( data, cb ){
     data.createdAt = data.modifiedAt = +new Date();
+    client.publish('uploads', JSON.stringify( data ));
     model.save( data, cb );
   };
 

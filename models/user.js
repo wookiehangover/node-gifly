@@ -37,7 +37,6 @@ fn.create = function( data, cb ){
 
   user.status = 'unconfirmed';
 
-
   this.client.exists( 'user:'+ user.username, function( err, res ){
 
     if( res === 1 ){
