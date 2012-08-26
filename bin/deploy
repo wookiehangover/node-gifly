@@ -5,6 +5,7 @@ curl -ssl https://s3.amazonaws.com/wookie-buildpack/config.dev.js -O ../config.d
 
 mkdir -p tmp
 
+NODE_ENV=production npm install
+
 grunt
 
-NODE_ENV=production npm install

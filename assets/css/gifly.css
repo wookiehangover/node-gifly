@@ -1133,8 +1133,20 @@ form input[type=submit] {
   -ms-transition: opacity 0.6s ease-in;
   -o-transition: opacity 0.6s ease-in;
   transition: opacity 0.6s ease-in;
-  opacity: 0;
-  filter: alpha(opacity=0);
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  position: relative;
+}
+#grid article figure :after {
+  content: "loading...";
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 8px;
+  padding: 4px;
+  -webkit-transition: opacity 0.6s ease-in;
+  -moz-transition: opacity 0.6s ease-in;
+  -ms-transition: opacity 0.6s ease-in;
+  -o-transition: opacity 0.6s ease-in;
+  transition: opacity 0.6s ease-in;
 }
 #grid article:hover .controls {
   left: 0;
@@ -1183,6 +1195,14 @@ form input[type=submit] {
   transition: width 0.4s ease-in-out;
 }
 #grid.isotope article figure {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+#grid.isotope article figure :after {
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.no-js #grid article figure {
   opacity: 1;
   filter: alpha(opacity=100);
 }

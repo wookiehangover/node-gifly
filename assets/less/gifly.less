@@ -154,7 +154,15 @@ form {
 
     figure {
       .transition(e('opacity 0.6s ease-in'));
-      .opacity(0);
+      .opacity(50);
+      position: relative;
+      :after {
+        content: "loading...";
+        #font > #family > .monospace();
+        font-size: 8px;
+        padding: 4px;
+        .transition(opacity 0.6s ease-in);
+      }
     }
 
     &:hover .controls { left: 0; }
@@ -195,6 +203,15 @@ form {
   }
 
   &.isotope article figure {
+    .opacity(100);
+    :after {
+      .opacity(0);
+    }
+  }
+}
+
+.no-js #grid {
+  article figure {
     .opacity(100);
   }
 }

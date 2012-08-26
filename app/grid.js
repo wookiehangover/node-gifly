@@ -56,6 +56,7 @@ define([
       var self = this;
 
       self.$el.imagesLoaded(function(){
+
         self.$el.isotope({
           itemSelector: 'article',
           getSortData: {
