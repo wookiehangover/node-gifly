@@ -8,7 +8,7 @@
   <title></title>
   <meta name="description" content="">
 
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
 
   <link rel="stylesheet" href="/assets/css/gifly.css">
 
@@ -20,7 +20,7 @@
     <h1><a href="/">Gifly</a></h1>
 
     <nav>
-      <% if(typeof user !== 'undefined' ){ %>
+      <% if(typeof user !== 'undefined' && user ){ %>
 
         <div class="user-nav">
           <a href="/profile" id="login-link">profile</a>
