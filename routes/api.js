@@ -16,12 +16,27 @@ module.exports = function( router, client ){
 
   });
 
+  router.add('api/session', function( req, res ){
+    req.session.get(function(err, sess){
+      if( sess && sess.auth ){
+        sess.auth.mod = config.mods.indexOf( sess.auth.username ) > -1 ? true : false;
+        res.json({ user: sess.auth });
+      } else {
+        res.error(403);
+      }
+    });
+  });
+
   router.add('api/media/:id', function( req, res, id ){
 
     if( req.method === 'DELETE' ){
       req.session.get(function(err, sess){
         var user;
-        if( sess && sess.auth ) user = sess.auth;
+        if( sess && sess.auth ){
+          user = sess.auth;
+        } else {
+          return res.error(403);
+        }
 
         client.hmget('upload:'+ id, 'hash', 'user', function(err, data){
 
@@ -33,8 +48,8 @@ module.exports = function( router, client ){
 
           if( !user ){
             error = [{ error: "Only logged in Users can delete" }, 401];
-          } else if(config.mods.indexOf( user.username ) ||
-                    user.username !== data[1] ){
+          } else if(config.mods.indexOf(user.username) === -1 ||
+                    (data[1] && user.username !== data[1])){
             error = [{ error: "You can only delete things that belong to you"}, 403];
           }
 
@@ -52,23 +67,6 @@ module.exports = function( router, client ){
         });
       });
     }
-
-  });
-
-  router.add('', function( req, res, params ){
-
-    req.session.get(function(err, sess){
-
-      var data = {};
-
-      if( sess && sess.auth ) data.user = sess.auth;
-
-      media.getAll( params, function( err, results ){
-        data.gifs = results;
-        res.template('index.ejs', data);
-      });
-
-    });
 
   });
 

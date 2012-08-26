@@ -1,6 +1,8 @@
 var fs         = require('fs');
 var ecstatic   = require('ecstatic');
 var less       = require('less');
+var Url = require('url');
+var config = require('../config');
 
 var ec = ecstatic( __dirname + '/..' );
 var parser = new less.Parser({
@@ -31,9 +33,22 @@ function processLess( req, res, filename ){
 
 module.exports = function( router, client ){
 
-  if( process.env.NODE_ENV !== 'production' ){
+  // re-route css requests to their corresponding less files
+  if( config.env !== 'production' ){
     router.add(/^\/assets\/css\/([^\.]+)\.css$/, 'less', processLess);
   }
+
+  // re-route production js assets in dev mode
+  router.add('dist/release/*path', function( req, res, file ){
+    var url = Url.parse(req.url);
+
+    if( config.env !== 'production' ){
+      url.pathname = '/assets/js/vendor/' + file;
+      req.url = Url.format( url );
+    }
+
+    ec( req, res );
+  });
 
   router.add('assets/*path', function( req, res ){
     ec( req, res );

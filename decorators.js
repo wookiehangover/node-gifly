@@ -64,6 +64,19 @@ function decorator( req, res ){
     res.send(data, status, {'content-type':'text/html'});
   };
 
+  req.parseBody = function( cb ){
+    var buf = '';
+    req.on('data', function( data ){
+      buf += data;
+    });
+
+    req.on('end', function(){
+      if( cb ){
+        cb( buf );
+      }
+    });
+  };
+
 }
 
 

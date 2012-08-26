@@ -13,13 +13,9 @@ module.exports = function( router, client ){
   });
 
   router.add('profile', function(req, res){
-    if( !req.session ){
-      return res.redirect('/login');
-    }
-
     req.session.get(function(err, sess){
       if(sess && sess.auth){
-        res.template('profile.ejs', sess.auth);
+        res.template('profile.ejs', { user: sess.auth });
       } else {
         res.redirect('/login');
       }
@@ -46,17 +42,11 @@ module.exports = function( router, client ){
       }
     }
 
-    function onEnd(){
-      var data = qs.parse(buf);
+    req.parseBody(function( body ){
+      var data = qs.parse(body);
       user.authenticate( data.username, data.password, onAuth);
-    }
-
-    var buf = '';
-    req.on('data', function(data){
-      buf += data;
     });
 
-    req.on('end', onEnd);
   });
 
   router.add('user/new', function( req, res ){
@@ -75,17 +65,10 @@ module.exports = function( router, client ){
       });
     }
 
-    function onEnd(){
-      var data = qs.parse(buf);
+    req.parseBody(function( body ){
+      var data = qs.parse( body );
       user.create( data, onCreate);
-    }
-
-    var buf = '';
-    req.on('data', function(data){
-      buf += data;
     });
-
-    req.on('end', onEnd);
   });
 
   router.add('logout', function(req, res){

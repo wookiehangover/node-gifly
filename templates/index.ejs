@@ -8,13 +8,17 @@
         <div class="progress"></div>
       </figure>
       <div class="controls">
-        <a href="#" data-action="play" class="play"><i class="icon-play"></i></a>
-        <a href="#" data-action="pause"><i class="icon-pause"></i></a>
-        <a href="#" data-action="fullscreen"><i class="icon-fullscreen"></i></a>
-        <a href="/<%= gif.hash %>.gif"><i class="icon-link"></i></a>
+        <a href="#" data-action="play" class="icon-play"></a>
+        <a href="#" data-action="fullscreen" class="icon-fullscreen"></a>
+        <a href="/<%= gif.hash %>.gif" class="icon-link"></a>
+        <% if( user && (gif.user && user.username === gif.user ) || user.mod === true ){%>
+        <a href="#" data-action="delete" class="icon-remove"></a>
+        <% } %>
       </div>
     </article>
   <% }); %>
 </div>
+<%- include _end_scripts %>
+<script data-main="/app/config.js" src="/dist/release/require.js"></script>
 <%- include _footer.ejs %>
 

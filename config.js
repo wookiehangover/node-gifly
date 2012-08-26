@@ -33,7 +33,7 @@ exports.templateOptions = {
 /*****************/
 /* don't delete! */
 /*****************/
-var env = process.env.NODE_ENV || process.env.APPLICATION_MODE
+var env = exports.env = process.env.NODE_ENV || process.env.APPLICATION_MODE
 var admin
 if (env === 'production') {
   admin = require('./config.admin.js')
