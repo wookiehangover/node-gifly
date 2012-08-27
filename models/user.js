@@ -206,7 +206,7 @@ fn.sendPasswordReset = function( email, cb ){
     // save token & username to redis
     var multi = self.client.multi();
     multi.set('pw_reset:'+ token, data.username);
-    multi.expires('pw_reset:'+ token, 60 * 30 );
+    multi.expire('pw_reset:'+ token, 60 * 30 );
 
     multi.exec(function(err, result){
       if( err ){
