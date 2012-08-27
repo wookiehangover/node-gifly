@@ -1,5 +1,6 @@
 var User = require('../models/user');
 var qs = require('querystring');
+var config = require('../config');
 
 module.exports = function( router, client ){
   var user = User( client );
@@ -29,8 +30,7 @@ module.exports = function( router, client ){
 
     function onAuth(err, userData){
       if(err){
-        console.log(err);
-        return res.error(err, 412);
+        return res.error(412, err);
       }
 
       if( userData ){
@@ -57,8 +57,10 @@ module.exports = function( router, client ){
     function onCreate(err, status, new_user){
       if(err){
         console.log(err);
-        return res.error(err, 412);
+        return res.error(412, err);
       }
+
+      user.sendEmailConfirmation( new_user );
 
       req.session.set('auth', new_user, function(){
         res.redirect('/profile');
@@ -69,6 +71,28 @@ module.exports = function( router, client ){
       var data = qs.parse( body );
       user.create( data, onCreate);
     });
+  });
+
+  router.add('confirm/:token', function( req, res, token ){
+
+    if( req.method !== 'GET' ){
+      return res.error(405);
+    }
+
+    user.confirmEmail( token, function(err, result){
+      if( err ){
+        return res.error(412,err);
+      }
+
+      req.session.get(function(err, sess){
+        if( sess && sess.auth ){
+          res.redirect('/profile');
+        } else {
+          res.redirect('/login');
+        }
+      });
+    });
+
   });
 
   router.add('logout', function(req, res){

@@ -3,6 +3,11 @@ var crypto = require('crypto');
 var redis = require('redis');
 var PasswordHash = require('phpass').PasswordHash;
 var bcrypt = new PasswordHash( 8 );
+var config = require('../config');
+
+var nodemailer = require('nodemailer');
+var mailer = nodemailer.createTransport(config.mailTransportType,
+                                        config.mailTransportSettings);
 
 function User( client ){
   if( !client ){
@@ -37,22 +42,96 @@ fn.create = function( data, cb ){
 
   user.status = 'unconfirmed';
 
-  this.client.exists( 'user:'+ user.username, function( err, res ){
+  var multi = this.client.multi();
 
-    if( res === 1 ){
-      cb('You must provide a unique username');
+  multi.exists('user:'+ user.username);
+  multi.exists('user:email:'+ user.email);
+
+  multi.exec(function(err, res){
+    if( res[0] === 1 || res[1] === 1 ){
+      cb('You must provide a unique username or password');
     } else {
 
-      if( user.password ){
-        self.storePassword( user.username, user.password );
-        delete user.password;
-      } else {
+      if( ! user.password ){
         return cb('Must provide a password');
       }
+      user.password = bcrypt.hashPassword( user.password );
+      user.status = "new";
 
-      self.update( user, cb );
+      var multi = self.client.multi();
+      var hash = [
+        'user:email:' + user.email,
+        'status', 'new',
+        'username', user.usermal
+      ];
+      multi.hmset(hash);
+
+      self.update( user, cb, multi );
     }
   });
+
+};
+
+fn.confirmEmail = function( token, cb ){
+  var self = this;
+  this.client.get('email_confirm:'+ token, function(err, username){
+
+    if( err ){
+      return cb(err);
+    }
+
+    self.client.hmget('user:'+ username, 'status', function(err, result){
+      if( err ){
+        return cb(err);
+      }
+
+      if( result[0] === 'new' ){
+        self.update({ username: username, status: 'confirmed' }, cb);
+      } else {
+        cb('User status isn\'t \'new\'');
+      }
+    });
+  });
+};
+
+fn.sendEmailConfirmation = function( user, cb ){
+
+  if( ! user.username ){
+    cb('Must provide a username');
+  }
+
+  // create a token
+  var token = crypto.randomBytes(30).toString('base64')
+                  .split('/').join('_')
+                  .split('+').join('-');
+
+  token = sha(token);
+
+  var u = 'http://b.gif.ly/confirm/'+ encodeURIComponent(token);
+  // store token in redis
+  this.client.set('email_confirm:'+ token, user.username, function(err, data){
+    // email user token
+    mailer.sendMail({
+      to: user.email,
+      from: config.from,
+      subject: 'Welcome to gif.ly. Please confirm your email.',
+      text: 'Here at gif.ly, we value whether or not you\'re a real person, '+
+        'and not an animated gif. Please confirm that '+
+        user.email +
+        ' is a valid email address belonging to a real, actual person.\r\n\r\n'+
+        'Please click on the following link, or paste this into your '+
+        'browser to complete the process:\r\n\r\n'+
+        '    ' + u + '\r\n\r\n'+
+        'Thanks.\r\n\r\n'+
+        '    -- @wookiehangover'
+    }, function(err, result){
+      if( cb ){
+        cb( err, result );
+      }
+    });
+
+  });
+
 };
 
 fn.get = function( username, cb ){
@@ -62,7 +141,7 @@ fn.get = function( username, cb ){
   });
 };
 
-fn.update = function( data, cb ){
+fn.update = function( data, cb, multi ){
 
   var hash = [ 'user:'+ data.username ];
 
@@ -73,11 +152,18 @@ fn.update = function( data, cb ){
     }
   }
 
-  this.client.hmset(hash, function(err, status){
+  function onUpdate(err, status){
     if( cb ){
       cb(err, status, data);
     }
-  });
+  }
+
+  if( multi !== undefined ){
+    multi.hmset(hash);
+    multi.exec(onUpdate);
+  } else {
+    this.client.hmset(hash, onUpdate);
+  }
 };
 
 fn.storePassword = function(username, password, cb){
@@ -85,7 +171,8 @@ fn.storePassword = function(username, password, cb){
 
   var hash = bcrypt.hashPassword( password );
 
-  this.update({ username: username, password: hash }, function(err, status, data){
+  this.update({ username: username, password: hash },
+              function(err, status, data){
 
     if( err ){
       console.error('Error storing password: '+ err);
@@ -113,6 +200,10 @@ fn.authenticate = function( username, password, cb ){
       return cb('Authentication Failure');
     }
 
+    if( res.status !== 'confirmed' ){
+      return cb('Please confirm account first');
+    }
+
     var hash = res.password;
     var auth = bcrypt.checkPassword( password, hash );
 
@@ -124,3 +215,7 @@ fn.authenticate = function( username, password, cb ){
   });
 
 };
+
+function sha (s) {
+  return crypto.createHash("sha1").update(s).digest("hex");
+}

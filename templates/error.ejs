@@ -1,4 +1,12 @@
 <%- include _header.ejs %>
-<h1><%= code %></h1>
+<h1>
+  <%= code %>:
+  <% if( typeof message !== 'undefined' ){%>
+    <%= message %>
+  <%}%>
+</h1>
+
+<% if( typeof error !== 'undefined' ){%>
 <p><%= error %></p>
+<%}%>
 <%- include _footer.ejs %>

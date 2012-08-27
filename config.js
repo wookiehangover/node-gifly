@@ -30,6 +30,8 @@ exports.templateOptions = {
   cache: !exports.nocache
 }
 
+exports.from = 'no-reply@gif.ly';
+
 /*****************/
 /* don't delete! */
 /*****************/
