@@ -73,6 +73,74 @@ module.exports = function( router, client ){
     });
   });
 
+  router.add('user/forgot-password', function(req, res){
+    if( req.method === 'POST' ){
+
+      req.parseBody(function(body){
+        var data = qs.parse(body);
+        req.session.get(function(sess){
+          if( sess && sess.auth ){
+            return res.redirect('/user/profile/edit');
+          }
+
+          if( !data.email ){
+            console.log(data);
+            return res.error(412, "Please provide an email address");
+          }
+
+          user.sendPasswordReset( data.email, function(err, result){
+            if(err){
+              return res.error(500, err);
+            }
+
+            res.template('password-recovery-submitted.ejs');
+          });
+        });
+      });
+    } else if( req.method === 'GET'){
+      res.template('forgot-password.ejs');
+    } else {
+      res.error(405);
+    }
+  });
+
+  router.add('reset/:token', function( req, res, token ){
+
+    var view = { token: token };
+
+    if( req.method === 'GET' ){
+      res.template('recover-password.ejs', view);
+    } else if( req.method === 'POST'){
+
+      req.parseBody(function( body ){
+        var data = qs.parse(body);
+        client.get('pw_reset:'+ token, function(err, username){
+          if( err ){
+            return res.error(404);
+          }
+
+          if( data.password !== data.confirmation ){
+            view.error = 'Password and confirmation must match';
+            return res.template('recover-password.ejs', view);
+          }
+
+          user.storePassword( username, data.password, function(err){
+            if( err ){
+              return res.error(500, err);
+            }
+            client.del('pw_reset:'+ token);
+            res.redirect('/login');
+          });
+
+        });
+      });
+    } else {
+      res.error(405);
+    }
+
+  });
+
+
   router.add('confirm/:token', function( req, res, token ){
 
     if( req.method !== 'GET' ){
