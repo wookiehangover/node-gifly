@@ -11,7 +11,6 @@ var parser = new less.Parser({
     filename: 'streamr.less'
 });
 
-
 function processLess( req, res, filename ){
   var lessPath = path.resolve(__dirname + '/../assets/less/'+ filename +'.less');
   fs.readFile(lessPath, 'utf-8', function( err, data ){
@@ -45,6 +44,11 @@ module.exports = function( router, client ){
   router.add('favicon.ico', function(req, res){
     req.url = '/assets/img/favicon.ico';
     ec( req, res );
+  });
+
+  router.add('beacon.gif', function(req, res, params){
+    client.lpush('tracking', JSON.stringify(params));
+    res.send('', 204);
   });
 
   // re-route production js assets in dev mode
