@@ -2,6 +2,7 @@
   "author": "wookiehangover",
   "name": "gifly",
   "version": "0.0.0-1",
+  "dependencies": {
     "ecstatic": "~0.1.6",
     "ramrod": "~0.0.5",
     "redis": "~0.7.2",
@@ -9,7 +10,7 @@
     "underscore.deferred": "~0.2.0",
     "engine.io": "~0.1.0",
     "keygrip": "~0.2.2",
-    "redsess": "~0.0.7",
+    "redsess": "0.0.8",
     "cookies": "~0.3.0",
     "knox": "~0.1.0",
     "formidable": "~1.0.11",
