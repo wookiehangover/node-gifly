@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     clean: ["dist"],
 
     lint: {
-      files: ['grunt.js', 'app/**/*.js', 'routes/**.*.js', 'models/**.*.js', '*.js']
+      files: ['grunt.js', 'app/**/*.js', 'routes/**.*.js', 'models/**.*.js']
     },
 
     concat: {
