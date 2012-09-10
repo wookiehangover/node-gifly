@@ -6,8 +6,13 @@ var url    = require('url');
 var knox   = require('knox');
 var redis  = require('redis');
 var crypto = require('crypto');
+var loggly = require('loggly');
+
 var config = require('./config');
 var Media  = require('./models/media');
+
+var token = config.logglyToken;
+var logger = loggly.createClient(config.loggly);
 
 var def = _.Deferred;
 var tmpDir = config.tmpDir;
@@ -19,7 +24,7 @@ var client = redis.createClient(r.port, r.host, r);
 if( r.auth ) client.auth(r.auth);
 
 client.on('error', function(err){
-  console.log('Redis Error: '+ err);
+  logger.log(token, 'Redis Error: '+ err);
 });
 
 
@@ -28,7 +33,7 @@ client.on('connect',function(){
   setInterval(function(){
     client.rpop('queue:gifs', function(err, message){
       if( err ){
-        console.error( err );
+        logger.log(token, err );
         console.trace();
       }
 
@@ -47,12 +52,22 @@ var media = new Media( client );
 // Processr
 //
 
+// TODO:
+//
+//  * simplify constructor arguments; allow for raw streams
+//  * refactor to inherit from EventEmitter to implement a state machine in
+//    order to better define a definite processing order. -- nested dfd
+//    callbacks will work too
+//  * make hashing a pipe-able interface
+//  
+//  * only upload when processing and hashing are complete
+//
+
 function Processr( file, data ){
   var self = this;
 
-  console.log('Processing: ', data);
-
-  console.log(file);
+  logger.log(token, data);
+  logger.log(token, file);
 
   this.file = file;
   this.data = data;
@@ -66,7 +81,6 @@ function Processr( file, data ){
   _.when.apply(null, this.queue).then(function(){
     self.cleanup();
   }, function(){
-    // TODO: cleanup redis records on failure
     media.del( this.data );
     self.cleanup();
   });
@@ -74,14 +88,14 @@ function Processr( file, data ){
 
 Processr.prototype.cleanup = function(){
 
-  console.log('cleaning up: '+ this.tmp_files);
+  logger.log( token, 'cleaning up: '+ this.tmp_files);
   this.tmp_files.forEach(function(file){
     fs.unlink( file, function(err){
       if( err ){
         console.error(err);
         console.trace();
       } else {
-        console.log('Deleted:' + file);
+        logger.log(token, 'Deleted:' + file);
       }
     });
   });
@@ -110,6 +124,8 @@ Processr.prototype.hash = function( stream ){
     var fileHash = crypto.createHash('md5');
     fileHash.update( buf );
     data.filehash = fileHash.digest('hex').slice(0,8);
+
+    // TODO: if filehash exists, mark record as duplicate and stop processing
 
     media.save( data, function(err, status, media){
       if( err ){
@@ -200,7 +216,7 @@ Processr.prototype.enhance = function( stream ){
 
     res.on('end', function(){
 
-      console.log(res.req.url);
+      logger.log(token, res.req.url);
       var data = {
         id: self.data.id,
         cover_url: res.req.url.replace(/https?:/, '')

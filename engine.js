@@ -5,7 +5,7 @@ var engine = require('engine.io');
 var redis = require('redis');
 var config = require('./config.js');
 
-function Engine( server ){
+function Engine( server, logger ){
 
   var io = engine.attach( server );
   var r = config.redis;
@@ -24,7 +24,7 @@ function Engine( server ){
     uploads.on('message', onMessage);
 
     socket.on('close', function(){
-      console.log('socket connection closed');
+      logger.log(config.logglyToken, 'Socket Connection Closed');
       uploads.removeListener('message', onMessage);
     });
 

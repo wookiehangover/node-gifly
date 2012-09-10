@@ -58,6 +58,11 @@ router.add('mu-5838535f-4f3e8d3d-3d477ef2-93c7f533', function(req, res){
   res.end('42');
 });
 
+// List Mods
+router.add('api/mods', function(req, res){
+  res.json( config.mods );
+});
+
 // Catch-all
 router.on('*', function(req, res){
   res.error(404);

@@ -22,7 +22,7 @@ module.exports = function( router, client ){
         sess.auth.mod = config.mods.indexOf( sess.auth.username ) > -1 ? true : false;
         res.json({ user: sess.auth });
       } else {
-        res.error(403);
+        res.json({ error: 'You have to be logged in to do that.' }, 403);
       }
     });
   });

@@ -2,7 +2,6 @@
   "author": "wookiehangover",
   "name": "gifly",
   "version": "0.0.0-1",
-  "dependencies": {
     "ecstatic": "~0.1.6",
     "ramrod": "~0.0.5",
     "redis": "~0.7.2",
@@ -22,7 +21,8 @@
     "phpass": "~0.1.0",
     "markdown": "~0.4.0",
     "nodemailer": "~0.3.22",
-    "lodash": "~0.6.1"
+    "lodash": "~0.6.1",
+    "loggly": "~0.3.11"
   },
   "optionalDependencies": {
     "grunt-contrib": "~0.1.1",

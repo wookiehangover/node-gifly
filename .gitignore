@@ -29,3 +29,5 @@ tmp
 
 config.a*
 config.d*
+
+bin/pid

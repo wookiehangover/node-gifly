@@ -2,43 +2,44 @@ var http = require('http');
 var fork = require('child_process').fork;
 var redis = require('redis');
 var RedSess = require('redsess');
+var loggly = require('loggly');
 
 var config = require('./config');
 var router = require('./router');
 var engine = require('./engine');
 var decorate = require('./decorators');
 
+var token = config.logglyToken;
+var logger = loggly.createClient(config.loggly);
+
 RedSess.createClient(config.redis);
 
 var server = http.createServer(function( req, res ){
+  req.logger = logger;
+
   decorate(req, res);
   router.dispatch(req, res);
 });
 
-server.listen(config.port, function(){
-  console.info("Listening on %d", config.port);
-});
+module.exports = server;
 
 // attach real-time engine
-engine( server );
+engine( server, logger );
 
 var worker = fork( require('path').resolve(__dirname + '/processor.js'));
 
 process.on('exit', function closeAll(){
 
-  worker.exit(0);
-
   RedSess.close();
 
   try { engine.client.quit(); } catch (e) {
-    console.error('error quitting redis client', e);
-    engine.client.close();
+    logger.log( token, 'error quitting redis client', e);
   }
 
 });
 
 process.on('uncaughtException', function(err){
-  console.error('Warning: Uncaught Application Exception:' + err, +new Date());
+  console.log('Warning: Uncaught Application Exception:' + err);
   console.trace();
 });
 
