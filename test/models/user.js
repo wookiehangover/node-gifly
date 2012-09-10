@@ -26,7 +26,10 @@ describe('User Model', function(){
   });
 
   afterEach(function( done ){
-    this.user.client.del( 'user:wookiehangoverdafadsf', function(err){
+    var multi = this.user.client.multi();
+    multi.del('user:wookiehangoverdafadsf');
+    multi.del('user:email:sam+testesttest@quickleft.com');
+    multi.exec(function(err){
       if( err ) throw new Error(err);
       done();
     });
@@ -47,22 +50,10 @@ describe('User Model', function(){
 
     self.user.create(self.userData, function( err, res ){
       self.user.create(data, function( err ){
-        assert.equal( err, 'You must provide a unique username' );
+        assert.equal( err, 'You must provide a unique username and email' );
         done();
       });
     });
-  });
-
-  it('passwords are stored when creating a user', function( done ){
-    var self = this;
-
-    this.user.storePassword = function( username, password ){
-      assert.equal( username, self.userData.username );
-      assert.equal( password, self.userData.password);
-      done();
-    };
-
-    this.user.create(this.userData);
   });
 
   it('passwords are encrypted', function( done ){
@@ -77,30 +68,53 @@ describe('User Model', function(){
 
   it('should let you authenticate with a username and password', function( done ){
     var self = this;
-    self.user.storePassword(this.userData.username, this.userData.password, function( err, res ){
-      var checkIfDone = helper.expect( 2, done );
 
-      self.user.authenticate( self.userData.username, self.userData.password, function( err, res ){
-        assert.equal( err, null );
-        assert.ok( res );
-        checkIfDone();
+    this.user.client.hmset(['user:'+ this.userData.username, 'status', 'confirmed' ], function(err){
+      if(err)
+        throw new Error(err);
+
+      self.user.storePassword(self.userData.username, self.userData.password, function( err, res ){
+        var checkIfDone = helper.expect( 2, done );
+
+        self.user.authenticate( self.userData.username, self.userData.password, function( err, res ){
+          assert.equal( err, null );
+          assert.ok( res );
+          checkIfDone();
+        });
+
+        self.user.authenticate( self.userData.username, 'wuuut', function( err, res ){
+          assert.equal( err, 'Authentication Failure' );
+          assert.ok( !res );
+          checkIfDone();
+        });
       });
 
-      self.user.authenticate( self.userData.username, 'wuuut', function( err, res ){
-        assert.equal( err, 'Authentication Failure' );
-        assert.ok( !res );
-        checkIfDone();
-      });
     });
+
   });
 
   it('should omit password data when returning a result', function( done ){
     var self = this;
-    self.user.storePassword = function(){};
     self.user.create(this.userData, function(err, res){
+
       self.user.get('wookiehangoverdafadsf', function(err, res){
         assert.ok( !res.password );
         assert.ok( !res.salt );
+        done();
+      });
+    });
+  });
+
+
+  it('should enforce a schema', function(done){
+    var self = this;
+
+    this.user.create( this.userData, function(err, res){
+      self.user.update({ username: 'wookiehangover', status: 'confirmed', password: 'pwned'},
+                       function(err, status, data){
+
+        assert.notEqual(data.status, 'confirmed');
+        assert.notEqual(data.password, 'pwned');
         done();
       });
     });

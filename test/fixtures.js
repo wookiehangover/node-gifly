@@ -36,7 +36,7 @@ exports.userData = function(){
 
   return {
     username: 'wookiehangoverdafadsf',
-    email: 'sam@quickleft.com',
+    email: 'sam+testesttest@quickleft.com',
     password: 'foo bar',
     confirmation: 'foo bar'
   };

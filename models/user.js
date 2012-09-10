@@ -1,13 +1,13 @@
 module.exports = function( c ){ return new User(c); };
 var crypto = require('crypto');
-var redis = require('redis');
+var util = require('util');
 var PasswordHash = require('phpass').PasswordHash;
-var bcrypt = new PasswordHash( 8 );
+var nodemailer = require('nodemailer');
+
 var config = require('../config');
 
-var nodemailer = require('nodemailer');
 var mailer = nodemailer.createTransport(config.mailTransportType, config.mailTransportSettings);
-
+var bcrypt = new PasswordHash( 8 );
 
 //
 // User Model constructor
@@ -24,7 +24,36 @@ function User( client ){
   });
 }
 
+function createHash( data ){
+  var no_ws = /^\S+$/;
+  var digit = /^\d+$/;
+
+  // note that this schema is only for *user accessible fields*
+  //    - this means NO passwords resets or status escalation on UPDATE
+  var schema = {
+    cover_url: no_ws,
+    createdAt: digit,
+    email: no_ws,
+    modifiedAt: digit,
+    username: no_ws
+  };
+
+  var ret = {};
+
+  Object.keys( data ).forEach(function( i ){
+    if( i in schema && schema[i].test( data[i] ) ){
+      ret[i] = data[i];
+    }
+  });
+
+  return ret;
+}
+
 var fn = User.prototype;
+
+//
+// Create new User
+//
 
 fn.create = function( data, cb ){
 
@@ -52,7 +81,7 @@ fn.create = function( data, cb ){
 
   multi.exec(function(err, res){
     if( res[0] === 1 || res[1] === 1 ){
-      cb('You must provide a unique username or password');
+      cb('You must provide a unique username and email');
     } else {
 
       if( ! user.password ){
@@ -75,37 +104,113 @@ fn.create = function( data, cb ){
 
 };
 
+//
+// Get User data
+//
 
 fn.get = function( username, cb ){
   this.client.hgetall( 'user:' + username, function( err, res ){
     var user = res;
+    delete user.password;
     cb( err, user );
   });
 };
 
+//
+// Update User data
+//
+
 fn.update = function( data, cb, multi ){
 
-  var hash = [ 'user:'+ data.username ];
+  var hash = createHash( data );
 
-  for(var i in data){
-    if( data.hasOwnProperty(i) ){
-      hash.push(i);
-      hash.push(data[i]);
-    }
+  if(multi === undefined){
+    multi = this.client.multi();
   }
 
   function onUpdate(err, status){
     if( cb ){
-      cb(err, status, data);
+      cb(err, status, hash);
     }
   }
 
-  if( multi !== undefined ){
-    multi.hmset(hash);
-    multi.exec(onUpdate);
-  } else {
-    this.client.hmset(hash, onUpdate);
+  multi.hmset('user:' + data.username, hash);
+  multi.exec(onUpdate);
+};
+
+
+//
+// Confirm User Email
+//
+
+fn.confirmEmail = function( token, cb ){
+  var self = this;
+  this.client.get('email_confirm:'+ token, function(err, username){
+
+    if( err ){
+      return cb(err);
+    }
+
+    self.client.hmget('user:'+ username, 'status', 'email', function(err, result){
+      if( err ){
+        return cb(err);
+      }
+
+      if( result[0] === 'new' ){
+        var multi = self.client.multi();
+        // update the email-keyed status
+        multi.hmset('user:email:'+ result[1], 'status', 'confirmed');
+        // save the updated status on the model
+        self.update({ username: username, status: 'confirmed' }, cb, multi);
+      } else {
+        cb('User status isn\'t \'new\'');
+      }
+    });
+  });
+};
+
+//
+// User Confirmation Email
+//
+
+fn.sendEmailConfirmation = function( user, cb ){
+
+  if( ! user.username ){
+    cb('Must provide a username');
   }
+
+  // create a token
+  var token = crypto.randomBytes(30).toString('base64')
+                  .split('/').join('_')
+                  .split('+').join('-');
+
+  token = sha(token);
+
+  var u = 'http://b.gif.ly/confirm/'+ encodeURIComponent(token);
+  // store token in redis
+  this.client.set('email_confirm:'+ token, user.username, function(err, data){
+    // email user token
+    mailer.sendMail({
+      to: user.email,
+      from: config.from,
+      subject: 'Welcome to gif.ly. Please confirm your email.',
+      text: 'Here at gif.ly, we value whether or not you\'re a real person, '+
+        'and not an animated gif. Please confirm that '+
+        user.email +
+        ' is a valid email address belonging to a real, actual person.\r\n\r\n'+
+        'Please click on the following link, or paste this into your '+
+        'browser to complete the process:\r\n\r\n'+
+        '    ' + u + '\r\n\r\n'+
+        'Thanks.\r\n\r\n'+
+        '    -- @wookiehangover'
+    }, function(err, result){
+      if( cb ){
+        cb( err, result );
+      }
+    });
+
+  });
+
 };
 
 fn.storePassword = function(username, password, cb){
@@ -113,8 +218,10 @@ fn.storePassword = function(username, password, cb){
 
   var hash = bcrypt.hashPassword( password );
 
-  this.update({ username: username, password: hash },
-              function(err, status, data){
+  this.client.hmset(['user:'+username, 'username', username, 'password', hash],
+              function(err, status){
+
+    var data = { username: username, password: hash };
 
     if( err ){
       console.error('Error storing password: '+ err);
@@ -215,81 +322,6 @@ fn.sendPasswordReset = function( email, cb ){
 
       // send password reset email with token link
       mailer.sendMail(reset_options, cb);
-    });
-
-  });
-
-};
-
-
-//
-// Confirm User Email
-//
-
-fn.confirmEmail = function( token, cb ){
-  var self = this;
-  this.client.get('email_confirm:'+ token, function(err, username){
-
-    if( err ){
-      return cb(err);
-    }
-
-    self.client.hmget('user:'+ username, 'status', 'email', function(err, result){
-      if( err ){
-        return cb(err);
-      }
-
-      if( result[0] === 'new' ){
-        var multi = self.client.multi();
-        // update the email-keyed status
-        multi.hmset('user:email:'+ result[1], 'status', 'confirmed');
-        // save the updated status on the model
-        self.update({ username: username, status: 'confirmed' }, cb, multi);
-      } else {
-        cb('User status isn\'t \'new\'');
-      }
-    });
-  });
-};
-
-//
-// User Confirmation Email
-//
-
-fn.sendEmailConfirmation = function( user, cb ){
-
-  if( ! user.username ){
-    cb('Must provide a username');
-  }
-
-  // create a token
-  var token = crypto.randomBytes(30).toString('base64')
-                  .split('/').join('_')
-                  .split('+').join('-');
-
-  token = sha(token);
-
-  var u = 'http://b.gif.ly/confirm/'+ encodeURIComponent(token);
-  // store token in redis
-  this.client.set('email_confirm:'+ token, user.username, function(err, data){
-    // email user token
-    mailer.sendMail({
-      to: user.email,
-      from: config.from,
-      subject: 'Welcome to gif.ly. Please confirm your email.',
-      text: 'Here at gif.ly, we value whether or not you\'re a real person, '+
-        'and not an animated gif. Please confirm that '+
-        user.email +
-        ' is a valid email address belonging to a real, actual person.\r\n\r\n'+
-        'Please click on the following link, or paste this into your '+
-        'browser to complete the process:\r\n\r\n'+
-        '    ' + u + '\r\n\r\n'+
-        'Thanks.\r\n\r\n'+
-        '    -- @wookiehangover'
-    }, function(err, result){
-      if( cb ){
-        cb( err, result );
-      }
     });
 
   });
