@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var formidable = require('formidable');
 var MediaModel = require('../models/media');
 var config = require('../config');
+var csrf = require('csrf')( config.ips );
 
 module.exports = function( router, client ){
 
@@ -30,37 +31,42 @@ module.exports = function( router, client ){
           data.user = sess.auth.username;
         }
 
-        data.status = 'processing';
-        var fileHash = crypto.createHash('md5');
-        fileHash.update( JSON.stringify( data ) );
-        data.hash = fileHash.digest('hex').slice(0,8);
+        if( sess && sess.csrf ){
+          req.session._csrf = sess.csrf;
+        }
 
-        media.create(data, function onStore(err, upload){
-          if( err ){
-            return res.json(err, 500);
-          }
+        csrf(req, res, function(){
+          data.status = 'processing';
+          var fileHash = crypto.createHash('md5');
+          fileHash.update( JSON.stringify( data ) );
+          data.hash = fileHash.digest('hex').slice(0,8);
 
-          var multi = client.multi();
-
-          multi.rpush('queue:gifs', JSON.stringify({
-            file: file,
-            data: data
-          }));
-
-          multi.set('hash:'+ data.hash, data.id);
-
-          multi.exec(function(err, result){
+          media.create(data, function onStore(err, upload){
             if( err ){
-              console.error(err);
-              console.trace();
-              res.error(500);
-            } else {
-              res.json(data, 201);
+              return res.json(err, 500);
             }
-          });
 
-        });
-      });
+            var multi = client.multi();
+
+            multi.rpush('queue:gifs', JSON.stringify({
+              file: file,
+              data: data
+            }));
+
+            multi.set('hash:'+ data.hash, data.id);
+
+            multi.exec(function(err, result){
+              if( err ){
+                console.error(err);
+                console.trace();
+                res.error(500);
+              } else {
+                res.json(data, 201);
+              }
+            });
+          }); // csrf
+        }); // session
+      }); // form.parse
 
     });
 

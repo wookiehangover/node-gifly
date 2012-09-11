@@ -80,7 +80,10 @@ define([
           cache: false,
           processData: false,
           contentType: false,
-          data: form
+          data: form,
+          headers: {
+            'x-csrf-token': $('input[name="_csrf"]').val()
+          }
         }).then(function( data ){
           dfd.resolve();
           self.view.collection.add( data );

@@ -1,12 +1,38 @@
-var User = require('../models/user');
 var qs = require('querystring');
 var config = require('../config');
+var User = require('../models/user');
+var csrf = require('csrf')( config.ips );
+
 
 module.exports = function( router, client ){
   var user = User( client );
 
   router.add('login', function( req, res ){
-    res.template('login.ejs', {});
+    req.session.get(function( err, sess ){
+
+      // TODO READ error
+
+      if( sess && sess.auth ){
+        res.redirect('/profile');
+        return;
+      }
+
+      if( sess && sess.csrf ){
+        res.template('login.ejs', { csrf:  sess.csrf });
+        return;
+      }
+
+      csrf(req, res, function(){});
+      var token = req.session._csrf;
+
+      req.session.set({ csrf: token }, function( err ){
+        if( err ){
+          return res.error( 500 );
+        }
+
+        res.template('login.ejs', { csrf: token });
+      });
+    });
   });
 
   router.add('signup', function( req, res ){
@@ -29,22 +55,37 @@ module.exports = function( router, client ){
     }
 
     function onAuth(err, userData){
-      if(err){
-        return res.error(412, err);
-      }
 
-      if( userData ){
-        req.session.set('auth', userData, function(){
-          res.redirect('/profile');
-        });
-      } else {
-        res.render('login.ejs', { error: "Authentication Failed" });
-      }
+      res.session.del('csrf', function(){
+        if(err){
+          return res.error(412, err);
+        }
+
+        if( userData ){
+          req.session.set('auth', userData, function(){
+            res.redirect('/profile');
+          });
+        } else {
+          res.render('login.ejs', { error: "Authentication Failed" });
+        }
+      });
+
     }
 
     req.parseBody(function( body ){
       var data = qs.parse(body);
-      user.authenticate( data.username, data.password, onAuth);
+
+      req.session.get(function( sess ){
+
+        if( sess && sess.csrf ){
+          req.session._csrf = sess.csrf;
+        }
+
+        csrf(req, res, function(){
+          user.authenticate( data.username, data.password, onAuth);
+        });
+
+      });
     });
 
   });
@@ -178,3 +219,4 @@ module.exports = function( router, client ){
   });
 
 };
+

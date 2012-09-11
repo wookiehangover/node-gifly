@@ -59,7 +59,7 @@ var media = new Media( client );
 //    order to better define a definite processing order. -- nested dfd
 //    callbacks will work too
 //  * make hashing a pipe-able interface
-//  
+//
 //  * only upload when processing and hashing are complete
 //
 
