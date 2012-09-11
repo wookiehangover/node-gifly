@@ -3,7 +3,7 @@ var config = require('../config');
 var fs = require('fs');
 var path = require('path');
 var markdown = require('markdown').markdown;
-var csrf = require('csrf')( config.ips );
+var csrf = require('csrf')();
 
 var readme = fs.readFileSync( path.resolve(__dirname + '/../readme.md') );
 readme = markdown.toHTML( readme.toString() );

@@ -3,7 +3,7 @@ var crypto = require('crypto');
 var formidable = require('formidable');
 var MediaModel = require('../models/media');
 var config = require('../config');
-var csrf = require('csrf')( config.ips );
+var csrf = require('csrf')();
 
 module.exports = function( router, client ){
 

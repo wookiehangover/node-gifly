@@ -1,7 +1,7 @@
 var qs = require('querystring');
 var config = require('../config');
 var User = require('../models/user');
-var csrf = require('csrf')( config.ips );
+var csrf = require('csrf')();
 
 
 module.exports = function( router, client ){
@@ -75,7 +75,9 @@ module.exports = function( router, client ){
     req.parseBody(function( body ){
       var data = qs.parse(body);
 
-      req.session.get(function( sess ){
+      req.body = data;
+
+      req.session.get(function( err, sess ){
 
         if( sess && sess.csrf ){
           req.session._csrf = sess.csrf;
