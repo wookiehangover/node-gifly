@@ -46,6 +46,11 @@ module.exports = function( router, client ){
     ec( req, res );
   });
 
+  router.add('google89fecbf161cfd6d7.html', function(req, res){
+    req.url = '/assets/google89fecbf161cfd6d7.html';
+    ec(req,res);
+  });
+
   router.add('beacon.gif', function(req, res, params){
     client.lpush('tracking', JSON.stringify(params));
     res.send('', 204);
