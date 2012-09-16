@@ -5,9 +5,7 @@ require([
 
   'grid',
   'media_collection',
-  'upload',
-
-  'plugins/jquery.isotope'
+  'upload'
 
 ], function( _, Backbone, eio, Grid, MediaCollection, uploader ){
 

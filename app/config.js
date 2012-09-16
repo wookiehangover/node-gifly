@@ -5,7 +5,7 @@ require.config({
     vendor: "../assets/js/vendor",
     plugins: "../assets/js/plugins",
 
-    backbone: "../assets/js/vendor/backbone",
+    backbone: "components/backbone/backbone",
     underscore: "../assets/js/vendor/lodash",
 
     // plugins

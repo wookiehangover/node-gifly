@@ -3,6 +3,7 @@ define([
   'backbone',
   'cell',
   'upload',
+  'plugins/jquery.isotope',
   'plugins/jquery.imagesloaded'
 ], function( _, Backbone, Cell, Uploader){
 
@@ -49,7 +50,6 @@ define([
       });
 
       this.uploader = new Uploader( this );
-
     },
 
     render: function(){
@@ -91,7 +91,6 @@ define([
     }
 
   });
-
 
   return Grid;
 

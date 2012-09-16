@@ -4,6 +4,8 @@
   "dependencies": {
     "jquery": "git://github.com/components/jquery.git#1.8.1",
     "backbone": "git://github.com/documentcloud/backbone.git#0.9.2",
-    "jquery-masonry": "git://github.com/desandro/masonry.git#2.1.05"
+    "jquery-masonry": "git://github.com/desandro/masonry.git#2.1.05",
+    "almond": "git://github.com/jrburke/almond.git#0.1.4",
+    "requirejs": "git://github.com/jrburke/requirejs#2.0.6"
   }
 }

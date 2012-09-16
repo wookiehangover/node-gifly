@@ -25,6 +25,7 @@ nbproject
 *.sublime-workspace
 
 node_modules
+app/components
 tmp
 
 config.a*
