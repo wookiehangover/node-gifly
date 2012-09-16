@@ -1,15 +1,14 @@
 var qs = require('querystring');
 var config = require('../config');
-var User = require('../models/user');
+var userModel = require('../models/user');
 var csrf = require('csrf')();
+var _ = require('lodash');
 
 module.exports = function( router, client ){
-  var user = User( client );
+  var user = userModel( client );
 
   router.add('login', function( req, res ){
     req.session.get(function( err, sess ){
-
-      // TODO READ error
 
       if( sess && sess.auth ){
         res.redirect('/profile');
@@ -61,7 +60,15 @@ module.exports = function( router, client ){
         }
 
         if( userData ){
-          req.session.set('auth', userData, function(){
+
+          userData = _.omit( userData, 'modifiedAt', 'createdAt');
+
+          req.session.set({ auth: userData }, function(err){
+
+            if(err){
+              console.log(err);
+            }
+
             res.redirect('/profile');
           });
         } else {
@@ -96,15 +103,23 @@ module.exports = function( router, client ){
       return res.error(405);
     }
 
-    function onCreate(err, status, new_user){
+    function onCreate(err, status, userData){
       if(err){
         console.log(err);
         return res.error(412, err);
       }
 
-      user.sendEmailConfirmation( new_user );
+      user.sendEmailConfirmation( userData );
 
-      req.session.set('auth', new_user, function(){
+      userData = _.omit( userData, 'createdAt', 'modifiedAt');
+
+      req.session.set({ auth: userData }, function(err){
+
+        if( err ){
+          console.error(err);
+          console.trace();
+        }
+
         res.redirect('/profile');
       });
     }
@@ -126,7 +141,6 @@ module.exports = function( router, client ){
           }
 
           if( !data.email ){
-            console.log(data);
             return res.error(412, "Please provide an email address");
           }
 
@@ -147,7 +161,6 @@ module.exports = function( router, client ){
   });
 
   router.add('reset/:token', function( req, res, token ){
-
     var view = { token: token };
 
     if( req.method === 'GET' ){
@@ -179,7 +192,6 @@ module.exports = function( router, client ){
     } else {
       res.error(405);
     }
-
   });
 
 

@@ -1,13 +1,13 @@
 var fs = require('fs');
 var crypto = require('crypto');
 var formidable = require('formidable');
-var MediaModel = require('../models/media');
+var mediaModel = require('../models/media');
 var config = require('../config');
 var csrf = require('csrf')();
 
 module.exports = function( router, client ){
 
-  var media = MediaModel(client);
+  var media = mediaModel(client);
 
   router.add('upload', function upload(req, res){
 

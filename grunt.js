@@ -8,18 +8,24 @@ module.exports = function(grunt) {
     clean: ["dist"],
 
     lint: {
-      files: ['grunt.js', 'app/**/*.js', 'routes/**.*.js', 'models/**.*.js']
+      files: [
+        'grunt.js',
+        'app/*.js',
+        'routes/*.js',
+        'models/*.js',
+        '*.js'
+      ]
     },
 
     concat: {
       "dist/debug/require.js": [
-        "assets/js/vendor/almond.js",
+        "app/components/almond/almond.js",
         "dist/debug/require.js"
       ]
     },
 
     qunit: {
-      files: ['test/**/*.html']
+      files: ['test/**/index.html']
     },
 
     less: {
@@ -44,9 +50,21 @@ module.exports = function(grunt) {
       }
     },
 
+    mocha: {
+      all: {
+        src: 'test/index.js',
+        options: {
+          timeout: 3000,
+          ignoreLeaks: false,
+          ui: 'bdd',
+          reporter: 'nyan'
+        }
+      }
+    },
+
     watch: {
-      files: '<config:lint.files>',
-      tasks: 'lint qunit'
+      files: ['<config:lint.files>', 'test/qunit/test/*.js'],
+      tasks: 'lint qunit mocha'
     },
 
     jshint: {
@@ -54,7 +72,7 @@ module.exports = function(grunt) {
         curly: true,
         eqeqeq: true,
         immed: false,
-        latedef: true,
+        latedef: false,
         newcap: true,
         noarg: true,
         sub: true,
@@ -81,7 +99,8 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint clean requirejs concat min less');
+  grunt.registerTask('default', 'lint clean requirejs concat min less mocha');
   grunt.loadNpmTasks('grunt-contrib');
+  grunt.loadNpmTasks('grunt-simple-mocha');
 
 };

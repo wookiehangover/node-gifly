@@ -1,4 +1,4 @@
-var MediaModel = require('../models/media');
+var mediaModel = require('../models/media');
 var config = require('../config');
 var fs = require('fs');
 var path = require('path');
@@ -10,7 +10,7 @@ readme = markdown.toHTML( readme.toString() );
 
 module.exports = function( router, client ){
 
-  var media = MediaModel( client );
+  var media = mediaModel( client );
 
   router.add('', function( req, res, params ){
     req.session.get(function(err, sess){

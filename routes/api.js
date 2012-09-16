@@ -1,9 +1,9 @@
-var MediaModel = require('../models/media');
+var mediaModel = require('../models/media');
 var config = require('../config');
 
 module.exports = function( router, client ){
 
-  var media = MediaModel( client );
+  var media = mediaModel( client );
 
   router.add('api/media', function(req, res, params ){
 

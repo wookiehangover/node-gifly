@@ -45,39 +45,43 @@ module.exports = function( router, client ){
   // Internal Redirects
   //
 
+  // favicon should come from site root
   router.add('favicon.ico', function(req, res){
     req.url = '/assets/img/favicon.ico';
     ec( req, res );
   });
 
+  // google webmaster tools
   router.add('google89fecbf161cfd6d7.html', function(req, res){
     req.url = '/assets/google89fecbf161cfd6d7.html';
     ec(req,res);
   });
 
+  // custom performance metrics tracking
   router.add('beacon.gif', function(req, res, params){
     client.lpush('tracking', JSON.stringify(params));
     res.send('', 204);
   });
 
   // re-route production js assets in dev mode
-  router.add('dist/release/*path', function( req, res, file ){
+  router.add('dist/release/require.js', function( req, res ){
     var url = Url.parse(req.url);
 
     if( config.env !== 'production' ){
-      url.pathname = '/assets/js/vendor/' + file;
+      url.pathname = '/app/components/requirejs/require.js';
       req.url = Url.format( url );
     }
 
     ec( req, res );
   });
 
-  router.add('assets/*path', function( req, res ){
-    ec( req, res );
-  });
+  //
+  // Static Files
+  //
 
-  router.add('app/*path', function( req, res ){
-    ec( req, res );
-  });
+  router.add('app/*path', ec);
 
+  router.add('assets/*path', ec);
+
+  router.add('test/*path', ec);
 };

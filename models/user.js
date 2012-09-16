@@ -87,8 +87,7 @@ fn.create = function( data, cb ){
       if( ! user.password ){
         return cb('Must provide a password');
       }
-      user.password = bcrypt.hashPassword( user.password );
-      user.status = "new";
+      var password = bcrypt.hashPassword( user.password );
 
       var multi = self.client.multi();
       var hash = [
@@ -97,6 +96,7 @@ fn.create = function( data, cb ){
         'username', user.username
       ];
       multi.hmset(hash);
+      multi.hmset('user:'+ user.username, 'status', 'new', 'password', password );
 
       self.update( user, cb, multi );
     }
@@ -161,7 +161,9 @@ fn.confirmEmail = function( token, cb ){
         // update the email-keyed status
         multi.hmset('user:email:'+ result[1], 'status', 'confirmed');
         // save the updated status on the model
-        self.update({ username: username, status: 'confirmed' }, cb, multi);
+        multi.hmset('user:'+ username, 'status', 'confirmed');
+
+        multi.exec(cb);
       } else {
         cb('User status isn\'t \'new\'');
       }

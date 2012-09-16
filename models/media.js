@@ -100,5 +100,5 @@ function media( client ){
 
   return model;
 
-};
+}
 

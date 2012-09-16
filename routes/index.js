@@ -17,6 +17,10 @@ var r = config.redis;
 var client = redis.createClient(r.port, r.host, r);
 if( r.auth ) client.auth(r.auth);
 
+client.on('error', function(err){
+  console.log(err);
+});
+
 //
 // Media Model Routes
 //

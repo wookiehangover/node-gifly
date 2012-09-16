@@ -1,2 +1,2 @@
 var models = require('./models');
-// var router = require('./router');
+var router = require('./routes');
