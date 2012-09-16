@@ -30,4 +30,12 @@ function Engine( server, logger ){
 
   });
 
+  process.on('exit', function(){
+    console.log('Engine::closing redis client');
+    try { uploads.quit(); } catch (e) {
+      console.error('error quitting redis client', e);
+      uploads.close();
+    }
+  });
+
 }

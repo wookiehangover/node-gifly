@@ -77,6 +77,18 @@ function decorator( req, res ){
     });
   };
 
+  var buf = '';
+
+  req.on('data', function( data ){
+    buf += data;
+  });
+
+  req.on('end', function(){
+    if( buf ){
+      req.emit('form', buf);
+    }
+  });
+
 }
 
 

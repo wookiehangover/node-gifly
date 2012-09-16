@@ -5,7 +5,7 @@ var RedSess = require('redsess');
 var loggly = require('loggly');
 
 var config = require('./config');
-var router = require('./router');
+var router = require('./routes');
 var engine = require('./engine');
 var decorate = require('./decorators');
 

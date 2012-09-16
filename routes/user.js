@@ -3,7 +3,6 @@ var config = require('../config');
 var User = require('../models/user');
 var csrf = require('csrf')();
 
-
 module.exports = function( router, client ){
   var user = User( client );
 
@@ -72,7 +71,7 @@ module.exports = function( router, client ){
 
     }
 
-    req.parseBody(function( body ){
+    req.on('form', function( body ){
       var data = qs.parse(body);
 
       req.body = data;
@@ -110,7 +109,7 @@ module.exports = function( router, client ){
       });
     }
 
-    req.parseBody(function( body ){
+    req.on('form', function( body ){
       var data = qs.parse( body );
       user.create( data, onCreate);
     });
@@ -119,7 +118,7 @@ module.exports = function( router, client ){
   router.add('user/forgot-password', function(req, res){
     if( req.method === 'POST' ){
 
-      req.parseBody(function(body){
+      req.on('form', function(body){
         var data = qs.parse(body);
         req.session.get(function(sess){
           if( sess && sess.auth ){
@@ -155,7 +154,7 @@ module.exports = function( router, client ){
       res.template('recover-password.ejs', view);
     } else if( req.method === 'POST'){
 
-      req.parseBody(function( body ){
+      req.on('form', function( body ){
         var data = qs.parse(body);
         client.get('pw_reset:'+ token, function(err, username){
           if( err ){

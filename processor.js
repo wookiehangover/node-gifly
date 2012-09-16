@@ -264,6 +264,7 @@ process.on('uncaughtException', function(e){
 
 process.on('exit', function(){
 
+  console.log('Processor::quitting redis client');
   try { client.quit(); } catch (e) {
     console.error('error quitting redis client', e);
     client.close();

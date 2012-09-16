@@ -1,5 +1,5 @@
 /*jshint curly: false */
-var config = require('./config');
+var config = require('../config');
 var ramrod = require('ramrod');
 var redis = require('redis');
 
@@ -21,35 +21,35 @@ if( r.auth ) client.auth(r.auth);
 // Media Model Routes
 //
 
-var media = require('./routes/media');
+var media = require('./media');
 media( router, client );
 
 //
 // Static Assets
 //
 
-var assets = require('./routes/assets');
+var assets = require('./assets');
 assets( router, client );
 
 //
 // User APIs
 //
 
-var user = require('./routes/user');
+var user = require('./user');
 user( router, client );
 
 //
 // Upload Endpoints
 //
 
-var upload = require('./routes/upload');
+var upload = require('./upload');
 upload( router, client );
 
 //
 // General APIs
 //
 
-var api = require('./routes/api');
+var api = require('./api');
 api( router, client );
 
 // Blitz.io
@@ -69,11 +69,10 @@ router.on('*', function(req, res){
 });
 
 process.on('exit', function(){
-  console.log('closing redis client');
+  console.log('Router::closing redis client');
   try { client.quit(); } catch (e) {
     console.error('error quitting redis client', e);
     client.close();
   }
 });
-
 

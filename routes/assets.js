@@ -41,6 +41,10 @@ module.exports = function( router, client ){
     router.add(/^\/assets\/css\/([^\.]+)\.css$/, 'less', processLess);
   }
 
+  //
+  // Internal Redirects
+  //
+
   router.add('favicon.ico', function(req, res){
     req.url = '/assets/img/favicon.ico';
     ec( req, res );
