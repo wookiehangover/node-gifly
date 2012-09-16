@@ -1,10 +1,12 @@
 #!/bin/sh
 
+# this bucket is locked down, just in case you were wondering...
 curl -ssl https://s3.amazonaws.com/wookie-buildpack/config.admin.js -O ../config.admin.js
 curl -ssl http://s3.amazonaws.com/wookie-buildpack/config.dev.js -O ../config.dev.js
 
 mkdir -p tmp
 
 npm install
+cd app && bower install && cd ..
 
-node build --force
+node bin/build

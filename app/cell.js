@@ -2,6 +2,7 @@ define([
   'underscore',
   'backbone',
   'tpl!templates/cell.ejs',
+  'plugins/jquery.isotope',
   'plugins/jquery.imagesloaded'
 ], function( _, Backbone, cellTmpl){
 
