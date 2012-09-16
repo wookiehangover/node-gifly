@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>QUnit Test Suite</title>
+
+  <!-- QUnit styles -->
+  <link rel="stylesheet" href="vendor/qunit-1.10.0.css">
+</head>
+
+<body>
+  <!-- QUnit stucture -->
+  <div class="dataset-test">
+    <h1 id="qunit-header">QUnit Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <div id="grid">
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Testing libs -->
+  <script src="vendor/qunit-1.10.0.js"></script>
+
+  <!-- Application libs -->
+  <script src="../../app/components/jquery/jquery.js"></script>
+
+  <!-- Load application -->
+  <script data-main="config"
+    src="../../app/components/requirejs/require.js"></script>
+
+</body>
+</html>
