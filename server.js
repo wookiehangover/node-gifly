@@ -21,7 +21,7 @@ var server = http.createServer(function( req, res ){
   router.dispatch(req, res);
 });
 
-module.exports = server;
+server.listen(3000);
 
 // attach real-time engine
 engine( server, logger );

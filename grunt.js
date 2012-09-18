@@ -99,7 +99,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint clean requirejs concat min less mocha');
+  grunt.registerTask('default', 'lint clean requirejs concat min less');
   grunt.loadNpmTasks('grunt-contrib');
   grunt.loadNpmTasks('grunt-simple-mocha');
 
