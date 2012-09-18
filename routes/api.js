@@ -8,6 +8,7 @@ module.exports = function( router, client ){
   router.add('api/media', function(req, res, params ){
 
     media.getAll( params, function( err, results ){
+
       if( err ){
         return res.error(500);
       }

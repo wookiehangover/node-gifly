@@ -69,9 +69,14 @@ function media( client ){
     var start = end - per_page;
 
     client.zrevrange('uploads:global', start, end, function(err, set){
+
+      // console.log('SET:', set)
+
       set.forEach(function(upload){
         multi.hgetall(upload);
       });
+
+      // console.log(multi.queue);
 
       multi.exec(cb);
     });

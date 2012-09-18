@@ -5,6 +5,8 @@ var path = require('path');
 var markdown = require('markdown').markdown;
 var csrf = require('csrf')();
 
+var _ = require('lodash');
+
 var readme = fs.readFileSync( path.resolve(__dirname + '/../readme.md') );
 readme = markdown.toHTML( readme.toString() );
 
@@ -37,7 +39,13 @@ module.exports = function( router, client ){
         }
 
         media.getAll( params, function( err, results ){
-          data.gifs = results;
+
+          if( err ){
+            console.log(err);
+            return res.error(500);
+          }
+
+          data.gifs = _.compact(results);
           data.readme = readme;
           res.template('index.ejs', data);
         });
