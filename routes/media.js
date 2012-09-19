@@ -3,6 +3,7 @@ var config = require('../config');
 var fs = require('fs');
 var path = require('path');
 var markdown = require('markdown').markdown;
+var request = require('request');
 var csrf = require('csrf')();
 
 var _ = require('lodash');
@@ -67,6 +68,20 @@ module.exports = function( router, client ){
       res.redirect( 'http:'+ url, 301 );
     });
   });
+
+  function kaleidos( req, res, path ){
+    var url = 'http://coldhead.github.com/kaleidos/';
+
+    if( path !== undefined ){
+      url += path;
+    }
+
+    request( url ).pipe( res );
+  }
+
+  router.add('k-hole/*path', kaleidos);
+  router.add('kaleidos/*path', kaleidos);
+  router.add('k/*path', kaleidos);
 
   // router.add(/^\/([\w]{8})$/, function( req, res, hash ){
   //   media.client.get('hash:'+ hash, function( err, key){
