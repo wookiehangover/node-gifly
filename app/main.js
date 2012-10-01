@@ -20,6 +20,12 @@ require([
       scrollTo(0,1);
     }
 
+    var hour = new Date().getHours();
+
+    if( hour > 20 || hour < 6 ){
+      $('body').addClass('night');
+    }
+
     var media = new MediaCollection();
     var grid = window.Grid = new Grid({
       socket: socket,

@@ -899,8 +899,9 @@ body {
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0 0 0 60px;
-  /* background: url(http://i.wookiehangover.com.s3.amazonaws.com/ob_stars.gif); */
-
+}
+body.night {
+  background: url(http://i.gif.ly/4057fb65.gif);
 }
 img:-webkit-full-screen {
   height: auto;
