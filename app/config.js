@@ -29,7 +29,12 @@ require.config({
     },
 
     "plugins/jquery.deparam": [],
-    "plugins/jquery.isotope": []
+
+    "plugins/jquery.isotope": {
+      deps: [
+        "plugins/jquery.imagesloaded"
+      ]
+    }
 
   }
 });
