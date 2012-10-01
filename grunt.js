@@ -63,8 +63,14 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['<config:lint.files>', 'test/qunit/test/*.js'],
-      tasks: 'lint qunit mocha'
+      mocha: {
+        files: ['<config:lint.files>', 'test/qunit/test/*.js'],
+        tasks: 'mocha'
+      },
+      qunit: {
+        files: ['app/**/**.js', 'test/qunit/test/*.js'],
+        tasks: 'qunit'
+      }
     },
 
     jshint: {
