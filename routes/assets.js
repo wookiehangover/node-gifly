@@ -75,6 +75,14 @@ module.exports = function( router, client ){
     ec( req, res );
   });
 
+  router.add('gif/*path', function(req, res, path){
+    res.redirect('http://v1.gif.ly/gif/'+ path);
+  });
+
+  router.add('search*path', function(req, res, path, params){
+    res.redirect('http://v1.gif.ly'+ req.url);
+  });
+
   //
   // Static Files
   //

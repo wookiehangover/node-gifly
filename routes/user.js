@@ -8,6 +8,8 @@ module.exports = function( router, client ){
   var user = userModel( client );
 
   router.add('login', function( req, res ){
+
+    var title = 'GIF.LY - Login';
     req.session.get(function( err, sess ){
 
       if( sess && sess.auth ){
@@ -16,7 +18,7 @@ module.exports = function( router, client ){
       }
 
       if( sess && sess.csrf ){
-        res.template('login.ejs', { csrf:  sess.csrf });
+        res.template('login.ejs', { csrf:  sess.csrf, title: title });
         return;
       }
 
@@ -28,13 +30,15 @@ module.exports = function( router, client ){
           return res.error( 500 );
         }
 
-        res.template('login.ejs', { csrf: token });
+        res.template('login.ejs', { csrf: token, title: title });
       });
     });
   });
 
   router.add('signup', function( req, res ){
-    res.template('create_account.ejs', {});
+    res.template('create_account.ejs', {
+      title: "GIF.LY - Create Your Account"
+    });
   });
 
   router.add('profile', function(req, res){
