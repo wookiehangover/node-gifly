@@ -19,10 +19,12 @@ define([
 
       this.model.on('change:cover_url', _.once(this.addToGrid), this);
 
-      if( this.model.get('url') ){
-        this.backgroundRender();
-      } else {
-        this.model.on('change:url', _.once(this.backgroundRender), this);
+      if(this.model.collection.indexOf(this.model) < 10){
+        if( this.model.get('url') ){
+          this.backgroundRender();
+        } else {
+          this.model.on('change:url', _.once(this.backgroundRender), this);
+        }
       }
 
     },

@@ -900,9 +900,6 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0 0 0 60px;
 }
-body.night {
-  background: url(http://i.gif.ly/4057fb65.gif);
-}
 img:-webkit-full-screen {
   height: auto;
 }
@@ -1494,13 +1491,6 @@ section.js-show {
   z-index: 1000;
 }
 #grid article figure {
-  -webkit-transition: opacity 0.6s ease-in;
-  -moz-transition: opacity 0.6s ease-in;
-  -ms-transition: opacity 0.6s ease-in;
-  -o-transition: opacity 0.6s ease-in;
-  transition: opacity 0.6s ease-in;
-  opacity: 0.5;
-  filter: alpha(opacity=50);
   position: relative;
 }
 #grid article figure :after {
