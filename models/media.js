@@ -2,6 +2,7 @@ module.exports = media;
 var config = require('../config');
 var fs = require('fs');
 var knox = require('knox');
+var _ = require('lodash');
 
 var s3 = knox.createClient( config.s3 );
 
@@ -58,6 +59,16 @@ function media( client ){
 
   model.get = function( key, cb ){
     client.hmget('upload:'+ key, 'cover_url', cb);
+  };
+
+  model.getRandom = function( cb ){
+    client.zrevrange('uploads:global', 0, -1, function(err, set){
+      var index = _.random(set.length);
+
+      client.hgetall(set[index], function(err, gif){
+        cb(err, gif);
+      });
+    });
   };
 
   model.getAll = function( params, cb ){

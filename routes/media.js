@@ -83,22 +83,6 @@ module.exports = function( router, client ){
   router.add('kaleidos/*path', kaleidos);
   router.add('k/*path', kaleidos);
 
-  // router.add(/^\/([\w]{8})$/, function( req, res, hash ){
-  //   media.client.get('hash:'+ hash, function( err, key){
-  //     if( err ){
-  //       return res.error(500);
-  //     }
-
-  //     if( !key ){
-  //       return res.error(404);
-  //     }
-
-  //     media.client.hmget('upload:'+ key, function(err, url){
-  //       res.redirect( 'http:'+ url[0], 301 );
-  //     });
-  //   });
-  // });
-
   router.add('c/:hash', function( req, res, hash ){
     client.get('hash:'+ hash, function( err, key){
       if( err ){
@@ -112,6 +96,16 @@ module.exports = function( router, client ){
       client.hmget('upload:'+ key, 'cover_url', function(err, url){
         res.redirect( 'http:'+ url[0], 301 );
       });
+    });
+  });
+
+  router.add('random', function(req, res){
+    media.getRandom(function(err, gif){
+      if( err ){
+        return res.error(500, 'No GIF for you.');
+      }
+
+      request( 'http:'+ gif.url).pipe(res);
     });
   });
 

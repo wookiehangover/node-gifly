@@ -1,7 +1,7 @@
 {
   "author": "wookiehangover",
   "name": "gifly",
-  "version": "0.0.0-1",
+  "version": "0.0.0-2",
   "dependencies": {
     "ecstatic": "~0.1.6",
     "ramrod": "~0.0.5",
@@ -10,7 +10,7 @@
     "underscore.deferred": "~0.2.0",
     "engine.io": "~0.2.2",
     "keygrip": "~0.2.2",
-    "redsess": "0.0.8",
+    "redsess": "0.1.1",
     "cookies": "~0.3.2",
     "knox": "~0.3.0",
     "formidable": "~1.0.11",
@@ -22,10 +22,10 @@
     "phpass": "~0.1.0",
     "markdown": "~0.4.0",
     "nodemailer": "~0.3.22",
-    "lodash": "~0.6.1",
     "loggly": "~0.3.11",
     "csrf": "0.0.2",
-    "request": "~2.11.4"
+    "request": "~2.11.4",
+    "lodash": "~0.10.0"
   },
   "optionalDependencies": {
     "grunt-contrib": "~0.1.1",

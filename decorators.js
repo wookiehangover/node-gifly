@@ -26,7 +26,10 @@ function decorator( req, res ){
   req.negotiator = req.neg = new Negotiator(req);
   res.template = Templar( req, res, templateOptions);
   req.cookies = res.cookies = new Cookies(req, res, keys);
-  req.session = res.session = new RedSess(req, res);
+  req.session = res.session = new RedSess(req, res, {
+    expire: 4492800,
+    keys: keys
+  });
 
   res.error = new ErrorPage(req, res, {
     "*": 'error.ejs'
