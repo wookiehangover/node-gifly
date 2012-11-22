@@ -99,14 +99,56 @@ module.exports = function( router, client ){
     });
   });
 
-  router.add(/^\/random(\.gif)?$/, function(req, res){
-    media.getRandom(function(err, gif){
-      if( err ){
-        return res.error(500, 'No GIF for you.');
-      }
 
-      request( 'http:'+ gif.url).pipe(res);
+  var cached_response = null;
+  var cache_expires = null;
+  var cache_timer = 36e4;
+
+  function getRandom( set, cb ){
+    var index = _.random(set.length);
+
+    client.hgetall(set[index], function(err, gif){
+      cb(err, gif);
     });
+  }
+
+  router.add(/^\/random(\.gif)?$/, function(req, res){
+
+    var timestamp = +new Date();
+
+    if(  cached_response && (cache_expires + cache_timer > timestamp) ){
+
+      getRandom(cached_response, function(err, gif){
+        if( err ){
+          return res.error(500, 'No GIF for you.');
+        }
+
+        request( 'http:'+ gif.url ).pipe(res);
+      });
+
+    } else {
+
+      client.zrevrange('uploads:global', 0, -1, function(err, gifs){
+
+        if(err){
+          return res.error(500);
+        }
+
+        cached_response = gifs;
+        cache_expires = timestamp;
+
+        getRandom(cached_response, function(err, gif){
+          if( err ){
+            return res.error(500, 'No GIF for you.');
+          }
+
+          request( 'http:'+ gif.url ).pipe(res);
+        });
+
+      });
+    }
+
+
   });
 
 };
