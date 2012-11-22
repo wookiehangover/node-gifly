@@ -99,7 +99,7 @@ module.exports = function( router, client ){
     });
   });
 
-  router.add('random', function(req, res){
+  router.add(/^\/random(\.gif)?$/, function(req, res){
     media.getRandom(function(err, gif){
       if( err ){
         return res.error(500, 'No GIF for you.');
