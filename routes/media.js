@@ -122,7 +122,7 @@ module.exports = function( router, client ){
   var cache_timer = 864e4;
 
   function getRandom( set, cb ){
-    var index = _.random(set.length);
+    var index = ~~(Math.random() * set.length);
 
     client.hgetall(set[index], function(err, gif){
       cb(err, gif);
