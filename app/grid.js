@@ -9,7 +9,7 @@ define([
 
   var Grid = Backbone.View.extend({
 
-    el: $('#grid'),
+    el: $('#gif-grid'),
 
     initialize: function( options ){
       var self = this;

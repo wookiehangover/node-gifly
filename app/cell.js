@@ -77,7 +77,7 @@ define([
       var self = this;
       this.render();
       this.$el.imagesLoaded(function(){
-        $('#grid').isotope('insert', self.$el);
+        $('#gif-grid').isotope('insert', self.$el);
       });
     },
 
@@ -144,7 +144,7 @@ define([
     destroy: function(e){
       var self = this;
       this.model.destroy().done(function(){
-        $('#grid').isotope('remove', self.$el, function(){
+        $('#gif-grid').isotope('remove', self.$el, function(){
           self.remove();
         });
       });
