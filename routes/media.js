@@ -119,7 +119,7 @@ module.exports = function( router, client ){
 
   var cached_response = null;
   var cache_expires = null;
-  var cache_timer = 36e4;
+  var cache_timer = 864e4;
 
   function getRandom( set, cb ){
     var index = _.random(set.length);
