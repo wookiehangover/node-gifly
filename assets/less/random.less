@@ -5,3 +5,18 @@
     img { width: 100%; border: 1px solid @ltgray; }
   }
 }
+
+.random-next {
+  position: absolute;
+  top: 50%;
+  right: 1em;
+  font-size: 6em;
+  color: #ccc;
+  .opacity(50);
+  .transition(opacity 400ms);
+  &:hover {
+    text-decoration: none;
+    color: #ccc;
+    .opacity(100);
+  }
+}
