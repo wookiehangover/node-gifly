@@ -1,0 +1,114 @@
+header {
+  position:fixed;
+  float:left;
+  left:0px;
+  top:60px;
+  z-index: 1010;
+  line-height: 1;
+
+  h1 {
+    display:block;
+    float:left;
+    z-index: 1010;
+    position: relative;
+    background: url(/assets/img/logo_side.gif) no-repeat top left;
+    text-indent:-2000em;
+    margin: 0 0;
+    .size(27px,45px);
+
+    a {
+      display:block;
+      .size(100%,100%);
+    }
+
+  }
+
+  .sub () {
+    float:left;
+    clear:both;
+    .border-radius(e('0 3px 3px 0'));
+    .size(26px,26px);
+    font-size:11px;
+    margin-top:2px;
+    background-color:@gray;
+
+    a {
+      float:left;
+      clear: both;
+      color: @white;
+      position:absolute;
+      text-decoration:none;
+      .size(100%,100%);
+      &:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+    }
+  }
+
+  &:hover nav > div {
+    left: 0px;
+  }
+
+  nav {
+    > div {
+      .sub();
+      cursor:pointer;
+      position:relative;
+      float:left;
+      width:74px;
+      left: -48px;
+      .transition(left 0.3s ease-out);
+      
+
+      &:hover {
+        background: @grayDark;
+      }
+
+      a {
+        width: 60px;
+        padding: 6px 9px 0 5px;
+
+        i {
+          float: right;
+          font-size: 11px;
+          margin-right: -2px;
+        }
+      }
+
+      .login-link  { .sprite(); background-position:55px -29px; }
+      .logout-link { .sprite(); background-position:55px -279px;}
+      .signup-link { .sprite(); background-position:55px -65px; }
+      .readme-link { .sprite(); background-position:55px -97px;}
+
+    -webkit-animation: fade 3s;
+       -moz-animation: fade 3s;
+         -o-animation: fade 3s;
+            animation: fade 3s;
+
+    }
+  }
+
+}
+
+
+@-webkit-keyframes fade {
+  0%   { left: 0px; }
+  75%  { left: 0px; }
+  100% { left: -48px; }
+}
+@-moz-keyframes fade {
+  0%   { left: 0px; }
+  75%  { left: 0px; }
+  100% { left: -48px; }
+}
+@-o-keyframes fade {
+  0%   { left: 0px; }
+  75%  { left: 0px; }
+  100% { left: -48px; }
+}
+@keyframes fade {
+  0%   { left: 0px; }
+  75%  { left: 0px; }
+  100% { left: -48px; }
+}
