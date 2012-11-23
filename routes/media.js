@@ -101,7 +101,7 @@ module.exports = function( router, client ){
     });
   });
 
-  router.add('random', function(req, res){
+  router.add(/^\/r(andom)?$/, function(req, res){
     req.session.get(function(err, sess){
 
       var data = {};
@@ -129,7 +129,7 @@ module.exports = function( router, client ){
     });
   }
 
-  router.add(/^\/random\.gif$/, function(req, res){
+  router.add(/^\/r(andom)?\.gif$/, function(req, res){
 
     var timestamp = +new Date();
 
