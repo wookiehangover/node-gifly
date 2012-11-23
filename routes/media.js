@@ -5,7 +5,6 @@ var path = require('path');
 var markdown = require('markdown').markdown;
 var request = require('request');
 var csrf = require('csrf')();
-
 var _ = require('lodash');
 
 var readme = fs.readFileSync( path.resolve(__dirname + '/../readme.md') );
@@ -70,6 +69,9 @@ module.exports = function( router, client ){
   });
 
   function kaleidos( req, res, path ){
+
+    req.logger({ proxy: "Kaleidos proxy" });
+
     var url = 'http://coldhead.github.com/kaleidos/';
 
     if( path !== undefined ){
@@ -99,6 +101,21 @@ module.exports = function( router, client ){
     });
   });
 
+  router.add('random', function(req, res){
+    req.session.get(function(err, sess){
+
+      var data = {};
+
+      if( sess && sess.auth ){
+        data.user = sess.auth;
+      } else {
+        data.user = false;
+      }
+
+      data.readme = readme;
+      res.template('random.ejs', data);
+    });
+  });
 
   var cached_response = null;
   var cache_expires = null;
@@ -112,20 +129,26 @@ module.exports = function( router, client ){
     });
   }
 
-  router.add(/^\/random(\.gif)?$/, function(req, res){
+  router.add(/^\/random\.gif$/, function(req, res){
 
     var timestamp = +new Date();
 
-    if(  cached_response && (cache_expires + cache_timer > timestamp) ){
+    function proxyGif(err, gif){
+      if( err ){
+        return res.error(500, 'No GIF for you.');
+      }
 
-      getRandom(cached_response, function(err, gif){
-        if( err ){
-          return res.error(500, 'No GIF for you.');
-        }
-
+      if( gif && gif.url !== undefined ){
         request( 'http:'+ gif.url ).pipe(res);
-      });
+      } else {
+        cached_response = _.without(cached_response, gif);
+        req.logger("Random: null or undefined gif removed from cache");
+        getRandom(cached_response, proxyGif);
+      }
+    }
 
+    if(  cached_response && (cache_expires + cache_timer > timestamp) ){
+      getRandom(cached_response, proxyGif);
     } else {
 
       client.zrevrange('uploads:global', 0, -1, function(err, gifs){
@@ -134,20 +157,14 @@ module.exports = function( router, client ){
           return res.error(500);
         }
 
+        req.logger("Random cache rebuilt.");
+
         cached_response = gifs;
         cache_expires = timestamp;
 
-        getRandom(cached_response, function(err, gif){
-          if( err ){
-            return res.error(500, 'No GIF for you.');
-          }
-
-          request( 'http:'+ gif.url ).pipe(res);
-        });
-
+        getRandom(cached_response, proxyGif);
       });
     }
-
 
   });
 
