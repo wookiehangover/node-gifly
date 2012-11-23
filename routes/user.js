@@ -4,6 +4,8 @@ var userModel = require('../models/user');
 var csrf = require('csrf')();
 var _ = require('lodash');
 
+var log_token = config.logglyToken;
+
 module.exports = function( router, client ){
   var user = userModel( client );
 
@@ -57,7 +59,6 @@ module.exports = function( router, client ){
     }
 
     function onAuth(err, userData){
-
       res.session.del('csrf', function(){
         if(err){
           return res.error(412, err);
@@ -68,14 +69,15 @@ module.exports = function( router, client ){
           userData = _.omit( userData, 'modifiedAt', 'createdAt');
 
           req.session.set({ auth: userData }, function(err){
-
             if(err){
               console.log(err);
             }
 
+            req.logger({ auth: "successful login: "+ userData.username });
             res.redirect('/profile');
           });
         } else {
+          req.logger({ error: "Authentication Failure" });
           res.render('login.ejs', { error: "Authentication Failed" });
         }
       });
@@ -153,6 +155,7 @@ module.exports = function( router, client ){
               return res.error(500, err);
             }
 
+            req.logger({ auth: "password reset: "+ data.email });
             res.template('password-recovery-submitted.ejs');
           });
         });

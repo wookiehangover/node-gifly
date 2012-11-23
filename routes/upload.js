@@ -4,6 +4,9 @@ var formidable = require('formidable');
 var mediaModel = require('../models/media');
 var config = require('../config');
 var csrf = require('csrf')();
+var _ = require('lodash');
+
+var log_token = config.logglyToken;
 
 module.exports = function( router, client ){
 
@@ -55,12 +58,14 @@ module.exports = function( router, client ){
 
             multi.set('hash:'+ data.hash, data.id);
 
+
             multi.exec(function(err, result){
               if( err ){
                 console.error(err);
                 console.trace();
                 res.error(500);
               } else {
+                req.logger(_.extend({ message: "successfuly upload" }, data));
                 res.json(data, 201);
               }
             });

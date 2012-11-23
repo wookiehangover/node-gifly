@@ -5,8 +5,9 @@
   <%- readme %>
   </article>
 </section>
-<div id="grid">
+<div id="gif-grid">
   <% gifs && gifs.forEach(function(gif){ %>
+    <% if(gif.id && gif.hash ){ %>
     <article class="span2">
       <figure data-id="<%= gif.id %>">
         <img src="/c/<%= gif.hash %>"/>
@@ -22,6 +23,7 @@
         <% } %>
       </div>
     </article>
+    <% } %>
   <% }); %>
 </div>
 <input type="hidden" name="_csrf" value="<%= csrf %>" />

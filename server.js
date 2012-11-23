@@ -15,8 +15,9 @@ var logger = loggly.createClient(config.loggly);
 RedSess.createClient(config.redis);
 
 var server = http.createServer(function( req, res ){
-  req.logger = logger;
-
+  req.logger = function(msg){
+    logger.log(token, msg);
+  };
   decorate(req, res);
   router.dispatch(req, res);
 });
