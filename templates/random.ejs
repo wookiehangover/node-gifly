@@ -13,7 +13,20 @@
     </article>
   </div>
 </div>
-<a href="javascript: window.location.reload();" class="icon-random random-next"></a>
+<a href="javascript: void(0);" class="icon-random random-next"></a>
 <%- include _end_scripts %>
+<script>
+jQuery(function($){
+  $('body > header').on('click', '[data-action="readme"]', function(e){
+    $('body > section').toggleClass('js-show');
+    return false;
+  });
+
+  $('.random-next').click(function(e){
+    location.reload();
+    return false;
+  });
+});
+</script>
 <%- include _footer.ejs %>
 
