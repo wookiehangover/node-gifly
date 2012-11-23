@@ -1,7 +1,19 @@
-@import 'reset';
-@import 'variables';
-@import 'mixins';
+// CSS Reset
+@import 'bootstrap/reset';
+
+// Core variables and mixins
+@import 'bootstrap/variables';
+@import 'bootstrap/mixins';
+
+// Grid system and page structure
+@import "bootstrap/scaffolding";
+@import "bootstrap/grid";
+@import "bootstrap/layouts";
+
+// Font Awesome icons
 @import 'font-awesome';
+
+// Additional Dependencies
 @import 'isotope';
 @import 'markdown';
 
@@ -31,80 +43,7 @@ figure {
   float: left; clear: both;
 }
 
-header {
-  position:fixed;
-  float:left;
-  left:0px;
-  top:60px;
-  z-index: 1010;
-
-  h1 {
-    display:block;
-    float:left;
-    z-index: 1010;
-    position: relative;
-    background: url(/assets/img/logo_side.gif) no-repeat top left;
-    text-indent:-2000em;
-    margin: 0 0;
-    .size(27px,45px);
-
-    a {
-      display:block;
-      .size(100%,100%);
-    }
-
-  }
-
-  .sub () {
-    float:left;
-    clear:both;
-    .border-radius(e('0 3px 3px 0'));
-    .size(26px,26px);
-    font-size:11px;
-    margin-top:2px;
-    background-color:@gray;
-
-    a {
-      float:left;
-      clear: both;
-      color: @white;
-      position:absolute;
-      text-decoration:none;
-      .size(100%,100%);
-      .sprite();
-    }
-  }
-
-  &:hover nav .user-nav {
-    left: 0px;
-  }
-  nav {
-    .user-nav {
-      .sub();
-      cursor:pointer;
-      position:relative;
-      float:left;
-      width:74px;
-      left: -48px;
-      .transition(left 0.3s ease-out);
-
-      &:hover {
-        background: @grayDark;
-      }
-
-      a {
-        width: 60px;
-        padding: 6px 9px 0 5px;
-      }
-
-      .login-link  { background-position:55px -29px; }
-      .logout-link { background-position:55px -279px;}
-      .signup-link { background-position:55px -65px; }
-      .readme-link { background-position:55px -97px;}
-    }
-  }
-
-}
+@import 'header';
 
 body > h1 {
   background: @ltgray;
@@ -112,6 +51,8 @@ body > h1 {
   margin-top: 0;
   margin-left: 20px;
   padding: 0 6px;
+  font-size: 2.3em;
+  line-height: 1.2;
 }
 
 form {
@@ -166,77 +107,9 @@ section {
   }
 }
 
-#grid {
-  #grid > .core(188px, 20px);
-  height: 100%;
-  width: 100%;
-  float: left; clear: both;
 
-  article {
-    overflow: hidden;
-    z-index: 1000;
-
-    figure {
-      position: relative;
-      :after {
-        content: "loading...";
-        #font > #family > .monospace();
-        font-size: 8px;
-        padding: 4px;
-        .transition(opacity 0.6s ease-in);
-      }
-    }
-
-    &:hover .controls { left: 0; }
-
-    .controls {
-      position: absolute;
-      bottom: 20px;
-      left: -11em;
-      background: rgba(255,255,255, 0.5);
-      height: 3em;
-      .transition(e('left 0.2s ease-in-out'));
-
-      a {
-        text-decoration: none;
-        color: @black;
-        font-size: 1.5em;
-        padding: 0.5em;
-        float: left;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-
-        &:active i {
-          position: relative;
-          bottom: -1px;
-          right: -1px;
-        }
-      }
-    }
-
-    .progress {
-      .size(2px,5%);
-      position: absolute;
-      background: @blue;
-      left: 0; top: 0;
-      .box-shadow(0px 0px 4px 0px @blue);
-      .size(2px,5%);
-      .transition(width 0.4s ease-in-out);
-    }
-  }
-
-  &.isotope article figure {
-    .opacity(100);
-    :after {
-      .opacity(0);
-    }
-  }
-}
-
-.no-js #grid {
-  article figure {
-    .opacity(100);
-  }
-}
+@import 'random';
+@import 'grid';
 
 #loader {
   position: fixed;
