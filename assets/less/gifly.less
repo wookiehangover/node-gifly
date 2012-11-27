@@ -25,7 +25,7 @@ html, body { height: auto; height: 100%; }
 
 body {
   #font > #family > .sans-serif();
-  margin: 0 0 0 60px;
+  // margin: 0 0 0 60px;
 
   // &.night {
   //   background: url(http://i.gif.ly/4057fb65.gif);
@@ -47,9 +47,9 @@ figure {
 
 body > h1 {
   background: @ltgray;
-  float: left;
+  display: inline-block;
   margin-top: 0;
-  margin-left: 20px;
+  margin-left: 80px;
   padding: 0 6px;
   font-size: 2.3em;
   line-height: 1.2;
@@ -93,17 +93,21 @@ form {
 }
 
 section {
-  float:left;
-  clear:both;
   .markdown();
   margin-left: 20px;
   overflow: hidden;
   height: 0;
   .transition(all 0.4s ease-in-out);
 
+  article { float: left; clear: both; }
+
   &.js-show {
     margin-bottom: 2em;
     height: 488px;
+  }
+
+  &.readme {
+    .container();
   }
 }
 
@@ -153,7 +157,7 @@ section {
 
 @media all and (max-height: 480px){
 
-  body { margin: 0; }
+  #gif-grid { margin: 0; }
 
   body > h1 {
     width: 100%; text-align: center; margin-left: 0; padding: 4px 0;

@@ -1250,7 +1250,6 @@ body {
 }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin: 0 0 0 60px;
 }
 img:-webkit-full-screen {
   height: auto;
@@ -1335,7 +1334,7 @@ header nav > div a {
 }
 header nav > div a i {
   float: right;
-  font-size: 11px;
+  font-size: 12px;
   margin-right: -2px;
 }
 header nav > div .login-link {
@@ -1402,7 +1401,7 @@ body > h1 {
   background: #e6e6e6;
   float: left;
   margin-top: 0;
-  margin-left: 20px;
+  margin-left: 80px;
   padding: 0 6px;
   font-size: 2.3em;
   line-height: 1.2;
@@ -1440,8 +1439,6 @@ form input[type=submit] {
   clear: both;
 }
 section {
-  float: left;
-  clear: both;
   font: 13px helvetica, arial, freesans, clean, sans-serif;
   line-height: 1.6;
   margin: 0 auto;
@@ -1796,9 +1793,27 @@ section .highlight .vi {
 section .highlight .il {
   color: #099;
 }
+section article {
+  float: left;
+  clear: both;
+}
 section.js-show {
   margin-bottom: 2em;
   height: 488px;
+}
+section.readme {
+  margin-right: auto;
+  margin-left: auto;
+  *zoom: 1;
+}
+section.readme:before,
+section.readme:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+section.readme:after {
+  clear: both;
 }
 #random {
   padding-top: 2em;
@@ -1810,7 +1825,27 @@ section.js-show {
   width: 100%;
   border: 1px solid #e6e6e6;
 }
+.random-next {
+  position: absolute;
+  top: 50%;
+  right: 1em;
+  font-size: 6em;
+  color: #ccc;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  -webkit-transition: opacity 400ms;
+  -moz-transition: opacity 400ms;
+  -o-transition: opacity 400ms;
+  transition: opacity 400ms;
+}
+.random-next:hover {
+  text-decoration: none;
+  color: #ccc;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
 #gif-grid {
+  margin: 0 0 0 60px;
   height: 100%;
   width: 100%;
   float: left;
@@ -2046,7 +2081,7 @@ section.js-show {
   }
 }
 @media all and (max-height: 480px) {
-  body {
+  #gif-grid {
     margin: 0;
   }
   body > h1 {
