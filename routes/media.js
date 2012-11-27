@@ -139,7 +139,7 @@ module.exports = function( router, client ){
       }
 
       if( gif && gif.url !== undefined ){
-        request( 'http:'+ gif.url ).pipe(res);
+        res.redirect( 'http:'+ gif.url, 301 );
       } else {
         cached_response = _.without(cached_response, gif);
         req.logger("Random: null or undefined gif removed from cache");
