@@ -50,7 +50,7 @@
   text-decoration: none;
   color: #000;
   font-size: 20px;
-  padding: 7px;
+  padding: 8px 7px 6px;
   float: left;
 }
 .gifly-embed .gifly-controls a:active i {
