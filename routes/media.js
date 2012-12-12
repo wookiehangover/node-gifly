@@ -68,6 +68,24 @@ module.exports = function( router, client ){
     });
   });
 
+  router.add('embed/:gif', function( req, res, hash ){
+    client.get('hash:'+ hash, function( err, url){
+      if( err ){
+        return res.error(500);
+      }
+
+      if( !url ){
+        return res.error(404);
+      }
+
+      res.setHeader('Content-Type', 'application/javascript');
+      res.template('embed.js', {
+        hash: hash,
+        host: config.host + ( config.env !== 'production' ? ':'+config.port : '' )
+      });
+    });
+  });
+
   function kaleidos( req, res, path ){
 
     req.logger({ proxy: "Kaleidos proxy" });

@@ -36,6 +36,14 @@ module.exports = function(grunt) {
         files: {
           'assets/css/gifly.css': 'assets/less/gifly.less'
         }
+      },
+      embed: {
+        options: {
+          paths: ['assets/less']
+        },
+        files: {
+          'assets/css/embed.css': 'assets/less/embed.less'
+        }
       }
     },
 
@@ -100,6 +108,9 @@ module.exports = function(grunt) {
     min: {
       "dist/release/require.js": [
         "dist/debug/require.js"
+      ],
+      "assets/js/embed-scripts.min.js": [
+        "assets/js/embed-scripts.js"
       ]
     }
   });
