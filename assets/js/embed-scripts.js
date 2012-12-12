@@ -4,38 +4,37 @@
 var GIFLY = GIFLY || {}; GIFLY.$ = jQuery.noConflict();
 
 GIFLY.backgroundRender = function($el, url){
-  var timer;
-  function updateProgress(p){
-    $el.find('.gifly-progress').css('width', p);
+  var timer, p = $el.find('.gifly-progress');
+  function progress(x){
+    p.css('width', x);
   }
 
   $el.find('img').imagesLoaded(function(){
-    var loaded = false, full_img = new Image();
-    full_img.src = url;
-    updateProgress( '25%');
+    var loaded = false, img = new Image();
+    img.src = url;
+    progress('25%');
 
-    GIFLY.$(full_img).imagesLoaded()
+    GIFLY.$(img).imagesLoaded()
       .then(function(){
         timer && clearTimeout( timer );
-        updateProgress('100%');
-        full_img = undefined;
+        progress('100%');
         loaded = true;
+        p.delay(1000).fadeOut();
       }, function(){
         // uh oh
-        updateProgress('0%');
+        progress('0%');
       }, function(){
-        var p = 50;
-        updateProgress(p+'%');
+        var x = 50;
+        progress(x+'%');
 
         var tick = function(){
-          if( p === 99 ){ return; }
-          updateProgress( ( p+=1 ) + '%' );
+          if( x === 99 ){ return; }
+          progress( ( x+=1 ) + '%' );
           timer = setTimeout(tick, 30);
         }();
       });
 
-    setTimeout(function(){ loaded && updateProgress('0%'); }, 10e3);
-
+    setTimeout(function(){ !loaded && progress('0%'); }, 10e3);
   });
 };
 
