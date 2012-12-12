@@ -58,7 +58,7 @@
 
   d.write(gif);
 
-  if( G.$ )
+  if( G.$ && G.backgroundRender )
     onLoad();
   else if( G.loading )
     G.callbacks.push(onLoad);
