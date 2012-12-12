@@ -10,7 +10,7 @@ GIFLY.backgroundRender = function($el, url){
   }
 
   $el.find('img').imagesLoaded(function(){
-    var full_img = new Image();
+    var loaded = false, full_img = new Image();
     full_img.src = url;
     updateProgress( '25%');
 
@@ -19,6 +19,7 @@ GIFLY.backgroundRender = function($el, url){
         timer && clearTimeout( timer );
         updateProgress('100%');
         full_img = undefined;
+        loaded = true;
       }, function(){
         // uh oh
         updateProgress('0%');
@@ -32,6 +33,8 @@ GIFLY.backgroundRender = function($el, url){
           timer = setTimeout(tick, 30);
         }();
       });
+
+    setTimeout(function(){ loaded && updateProgress('0%'); }, 10e3);
 
   });
 };

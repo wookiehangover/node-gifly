@@ -30,7 +30,7 @@
 }
 
 .gifly-embed {
-  display: block;
+  display: inline-block;
   position: relative;
   overflow: hidden;
   font-family: 'arial', 'helvetica', sans-serif;
@@ -44,6 +44,7 @@
     float: left;
   }
 
+
   .gifly-progress {
     .size(2px,5%);
     position: absolute;
@@ -55,23 +56,31 @@
 
   .gifly-controls {
     position: absolute;
+    height: 34px;
     bottom: 5px;
-    left: -11em;
+    left: -250px;
     background: rgba(255,255,255, 0.5);
-    height: 3em;
     .transition(e('left 0.2s ease-in-out'));
 
     a {
       text-decoration: none;
       color: #000;
-      font-size: 1.5em;
-      padding: 0.5em;
+      font-size: 20px;
+      padding: 7px;
       float: left;
 
       &:active i {
         position: relative;
         bottom: -1px;
         right: -1px;
+      }
+
+      &.gifly-logo {
+        text-indent: -1000em;
+        .size(27px, 42px);
+        background: url('data:image/gif;base64,R0lGODlhKgAbAJECAP///wAAAAAAAAAAACH5BAUUAAIALAAAAAAqABsAAAInlIKpy+1ozpv0yYqz3rz7D4biSJbmiabqyrbuC8fyTNf2PV9wFBsFACH5BAUUAAIALA0ACwAUAAYAAAIOlI+JAOqvGpz0yIrFRQUAIfkEBRQAAgAsCgALABQABgAAAg2Uf4Ci648anIzaa6UtACH5BAUUAAIALAwACwATAAUAAAIMlGGpy+3/EJxJVgUKACH5BAUUAAIALA0ACwAQAAYAAAIMlI8JyS3rDoy0KgcKACH5BAUUAAIALAsACwAUAAYAAAINhI5pye0PI1qy2rpAAQAh+QQFFAACACwLAAsAFAAGAAACDZQPeMvN6aKcElJn7yoAIfkEBRQAAgAsDAALABQAAwAAAgqEbqfL7Z3giqoAACH5BAUUAAIALAwADAATAAUAAAINlAWny93JoJsUVSNFAQAh+QQFFAACACwKAAsAEAAGAAACDJSPgMusDeN6stJVAAAh+QQFFAACACwKAAwACgAFAAACCISOqWjrn5ooACH5BAUUAAIALAoADAAKAAQAAAIHlH+Ay6stCgAh+QQFFAACACwNAA8AAQABAAACAkQBACH5BAUUAAIALBcAEAABAAEAAAICRAEAOw%3D%3D') no-repeat;
+        margin: 5px 0 0 6px;
+        padding: 0 7px 0 0;
       }
     }
   }
@@ -94,5 +103,6 @@
   .icon-play:before                 { content: "\f04b"; }
   .icon-pause:before                { content: "\f04c"; }
   .icon-link:before                 { content: "\f0c1"; }
+  .icon-magic:before                { content: "\f0d0"; }
 
 }
