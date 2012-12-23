@@ -3,8 +3,9 @@
 
 var GIFLY = GIFLY || {}; GIFLY.$ = jQuery.noConflict();
 
-GIFLY.backgroundRender = function($el, url){
-  var timer, p = $el.find('.gifly-progress');
+GIFLY.backgroundRender = GIFLY.backgroundRender || function($el, url){
+  var timer, p = $el.find('.gifly-progress'),
+  dfd = GIFLY.$.Deferred();
   function progress(x){
     p.css('width', x);
   }
@@ -17,11 +18,13 @@ GIFLY.backgroundRender = function($el, url){
     GIFLY.$(img).imagesLoaded()
       .then(function(){
         timer && clearTimeout( timer );
+        dfd.resolve()
         progress('100%');
         loaded = true;
         p.delay(1000).fadeOut();
       }, function(){
         // uh oh
+        dfd.reject();
         progress('0%');
       }, function(){
         var x = 50;
@@ -36,6 +39,7 @@ GIFLY.backgroundRender = function($el, url){
 
     setTimeout(function(){ !loaded && progress('0%'); }, 10e3);
   });
+  return dfd;
 };
 
 (function($, undefined) {

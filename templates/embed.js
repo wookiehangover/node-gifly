@@ -1,5 +1,6 @@
 (function(w,d,h){
   var id = +new Date() +'_<%= hash %>', jq, G = w.GIFLY = w.GIFLY || {},
+  autoplay = <%= autoplay %>,
   gif ='<div class="gifly-embed" id="'+id+'"><div class="gifly-figure"><img src="'+h+'/c/<%= hash %>"><div class="gifly-progress"></div></div><div class="gifly-controls"><a href="'+h+'" class="gifly-logo">gif.ly</a><a href="#" data-action="play" class="icon-play"></a><a href="http://<%= host %>/<%= hash %>.gif" target="_blank"><i class="icon-link"></i></a><a href="'+h+'/k/?src=/<%= hash %>.gif" class="icon-magic"></a></div></div>';
   if( (jq = w.jQuery || w.$) && jq.fn && parseFloat(jq.fn.jquery) >= 1.8 ) G.$ = jq;
 
@@ -51,7 +52,12 @@
         });
         return false;
       });
-    G.backgroundRender($el, h+'/<%= hash %>.gif');
+    var rendered = G.backgroundRender($el, h+'/<%= hash %>.gif');
+    if( autoplay ){
+      rendered.done(function(){
+        $el.find('[data-action="play"]').trigger('click');
+      });
+    }
   }
 
   !G.css && (G.css = true && loadCSS());

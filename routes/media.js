@@ -68,8 +68,9 @@ module.exports = function( router, client ){
     });
   });
 
-  router.add('embed/:gif', function( req, res, hash ){
-    client.get('hash:'+ hash, function( err, url){
+  router.add('embed/:gif', function( req, res, hash, params ){
+    var options = params || {};
+    client.get('hash:'+ hash, function( err, url ){
       if( err ){
         return res.error(500);
       }
@@ -81,6 +82,7 @@ module.exports = function( router, client ){
       res.setHeader('Content-Type', 'application/javascript');
       res.template('embed.js', {
         hash: hash,
+        autoplay: !!options.autoplay,
         host: config.host + ( config.env !== 'production' ? ':'+config.port : '' )
       });
     });
