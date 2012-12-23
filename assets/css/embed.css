@@ -12,6 +12,7 @@
   font-family: 'arial', 'helvetica', sans-serif;
   font-size: 12px;
 }
+.gifly-embed.show-controls .gifly-controls,
 .gifly-embed:hover .gifly-controls {
   left: 2px;
 }

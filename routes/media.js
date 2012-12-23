@@ -83,6 +83,7 @@ module.exports = function( router, client ){
       res.template('embed.js', {
         hash: hash,
         autoplay: !!options.autoplay,
+        controls: !!options.controls,
         host: config.host + ( config.env !== 'production' ? ':'+config.port : '' )
       });
     });
