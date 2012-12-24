@@ -63,7 +63,10 @@
     }
   }
 
-  !G.css && (G.css = true && loadCSS());
+  if( !G.css ){
+    G.css = true;
+    loadCSS();
+  }
 
   d.write(gif);
 
