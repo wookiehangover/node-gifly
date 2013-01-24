@@ -28,46 +28,44 @@ module.exports = function( router, client ){
     });
   });
 
-  router.add('api/media/:id', function( req, res, id ){
+  router.del('api/media/:id', function( req, res, id ){
 
-    if( req.method === 'DELETE' ){
-      req.session.get(function(err, sess){
-        var user;
-        if( sess && sess.auth ){
-          user = sess.auth;
-        } else {
-          return res.error(403);
+    req.session.get(function(err, sess){
+      var user;
+      if( sess && sess.auth ){
+        user = sess.auth;
+      } else {
+        return res.error(403);
+      }
+
+      client.hmget('upload:'+ id, 'hash', 'user', function(err, data){
+
+        if( err ){
+          return res.error(500);
         }
 
-        client.hmget('upload:'+ id, 'hash', 'user', function(err, data){
+        var error;
 
+        if( !user ){
+          error = [{ error: "Only logged in Users can delete" }, 401];
+        } else if(config.mods.indexOf(user.username) === -1 ||
+                  (data[1] && user.username !== data[1])){
+          error = [{ error: "You can only delete things that belong to you"}, 403];
+        }
+
+        if( error !== undefined ){
+          return res.json.apply(null, error);
+        }
+
+        media.del({ id: id, hash: data[0] }, function(err, result){
           if( err ){
-            return res.error(500);
+            res.error(500);
+          } else {
+            res.send('', 204);
           }
-
-          var error;
-
-          if( !user ){
-            error = [{ error: "Only logged in Users can delete" }, 401];
-          } else if(config.mods.indexOf(user.username) === -1 ||
-                    (data[1] && user.username !== data[1])){
-            error = [{ error: "You can only delete things that belong to you"}, 403];
-          }
-
-          if( error !== undefined ){
-            return res.json.apply(null, error);
-          }
-
-          media.del({ id: id, hash: data[0] }, function(err, result){
-            if( err ){
-              res.error(500);
-            } else {
-              res.send('', 204);
-            }
-          });
         });
       });
-    }
+    });
 
   });
 
