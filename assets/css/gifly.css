@@ -1383,7 +1383,6 @@ form {
   float: left;
   clear: both;
   width: 416px;
-  padding-left: 20px;
   font-size: 12px;
 }
 form .form-row {
@@ -1820,7 +1819,8 @@ section.readme:after {
 #gif-grid {
   margin: 0 0 0 60px;
   height: 100%;
-  width: 100%;
+  width: 90%;
+  width: calc(100% - 60px);
   float: left;
   clear: both;
 }

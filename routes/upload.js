@@ -21,8 +21,12 @@ module.exports = function( router, client ){
       var file = files.files;
       var data = fields;
 
-      data.filename = file.name;
-      data.id = file.name + file.size;
+      if( file ){
+        data.filename = file.name;
+        data.id = file.name + file.size;
+      } else {
+        return res.json({ error: "You need to provide a file" }, 412);
+      }
 
       req.session.get(function(err, sess){
         if( !(sess && sess.auth) ){

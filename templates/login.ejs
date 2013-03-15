@@ -1,17 +1,20 @@
 <%- include _header.ejs %>
-<h1>Login. Spread the love &#9842;.</h1>
-<form action="/user/authenticate" method="POST">
-  <input type="hidden" name="_csrf" value="<%= csrf %>" />
-  <div class="form-row">
-    <label for=username>Username / Email</label>
-    <input autocorrect="off" autocomplete="off" autocapitalize="off" type=text name=username />
-  </div>
-  <div class="form-row">
-    <label for=password>Password</label>
-    <input type=password name=password />
-  </div>
-  <button>Submit</button>
-  <a href="/user/forgot-password">I forgot my password</a>
-</form>
-<%- include _footer.ejs %>
+<div class="container">
 
+  <h1>Login. Spread the love &#9842;.</h1>
+  <form action="/user/authenticate" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrf %>" />
+    <div class="form-row">
+      <label for=username>Username / Email</label>
+      <input autocorrect="off" autocomplete="off" autocapitalize="off" type=text name=username />
+    </div>
+    <div class="form-row">
+      <label for=password>Password</label>
+      <input type=password name=password />
+    </div>
+    <button>Submit</button>
+    <a href="/user/forgot-password">I forgot my password</a>
+  </form>
+
+</div>
+<%- include _footer.ejs %>
