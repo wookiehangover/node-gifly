@@ -12,12 +12,17 @@
 
     figure {
       position: relative;
+      width: 100%;
+      text-align: center;
       :after {
         content: "loading...";
         #font > #family > .monospace();
         font-size: 8px;
         padding: 4px;
         .transition(opacity 0.6s ease-in);
+      }
+      img {
+        width: 100%;
       }
     }
 
@@ -55,6 +60,7 @@
       .box-shadow(0px 0px 4px 0px @blue);
       .size(2px,5%);
       .transition(width 0.4s ease-in-out);
+      .opacity(20);
     }
   }
 

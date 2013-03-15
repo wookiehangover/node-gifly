@@ -1926,6 +1926,8 @@ section.readme:after {
 }
 #gif-grid article figure {
   position: relative;
+  width: 100%;
+  text-align: center;
 }
 #gif-grid article figure :after {
   content: "loading...";
@@ -1936,6 +1938,9 @@ section.readme:after {
   -moz-transition: opacity 0.6s ease-in;
   -o-transition: opacity 0.6s ease-in;
   transition: opacity 0.6s ease-in;
+}
+#gif-grid article figure img {
+  width: 100%;
 }
 #gif-grid article:hover .controls {
   left: 0;
@@ -1980,6 +1985,8 @@ section.readme:after {
   -moz-transition: width 0.4s ease-in-out;
   -o-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
 }
 #gif-grid.isotope article figure {
   opacity: 1;
