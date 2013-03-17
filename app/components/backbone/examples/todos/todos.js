@@ -1,6 +1,6 @@
 // An example Backbone application contributed by
 // [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses a simple
-// [LocalStorage adapter](backbone-localstorage.js)
+// [LocalStorage adapter](backbone-localstorage.html)
 // to persist Backbone models within your browser.
 
 // Load the application once the DOM is ready, using `jQuery.ready`:
@@ -24,18 +24,13 @@ $(function(){
     // Ensure that each todo created has `title`.
     initialize: function() {
       if (!this.get("title")) {
-        this.set({"title": this.defaults.title});
+        this.set({"title": this.defaults().title});
       }
     },
 
     // Toggle the `done` state of this todo item.
     toggle: function() {
       this.save({done: !this.get("done")});
-    },
-
-    // Remove this Todo from *localStorage* and delete its view.
-    clear: function() {
-      this.destroy();
     }
 
   });
@@ -50,8 +45,8 @@ $(function(){
     // Reference to this collection's model.
     model: Todo,
 
-    // Save all of the todo items under the `"todos"` namespace.
-    localStorage: new Store("todos-backbone"),
+    // Save all of the todo items under the `"todos-backbone"` namespace.
+    localStorage: new Backbone.LocalStorage("todos-backbone"),
 
     // Filter down the list of all todo items that are finished.
     done: function() {
@@ -105,8 +100,8 @@ $(function(){
     // a one-to-one correspondence between a **Todo** and a **TodoView** in this
     // app, we set a direct reference on the model for convenience.
     initialize: function() {
-      this.model.bind('change', this.render, this);
-      this.model.bind('destroy', this.remove, this);
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', this.remove);
     },
 
     // Re-render the titles of the todo item.
@@ -131,9 +126,12 @@ $(function(){
     // Close the `"editing"` mode, saving changes to the todo.
     close: function() {
       var value = this.input.val();
-      if (!value) this.clear();
-      this.model.save({title: value});
-      this.$el.removeClass("editing");
+      if (!value) {
+        this.clear();
+      } else {
+        this.model.save({title: value});
+        this.$el.removeClass("editing");
+      }
     },
 
     // If you hit `enter`, we're through editing the item.
@@ -143,7 +141,7 @@ $(function(){
 
     // Remove the item, destroy the model.
     clear: function() {
-      this.model.clear();
+      this.model.destroy();
     }
 
   });
@@ -176,9 +174,9 @@ $(function(){
       this.input = this.$("#new-todo");
       this.allCheckbox = this.$("#toggle-all")[0];
 
-      Todos.bind('add', this.addOne, this);
-      Todos.bind('reset', this.addAll, this);
-      Todos.bind('all', this.render, this);
+      this.listenTo(Todos, 'add', this.addOne);
+      this.listenTo(Todos, 'reset', this.addAll);
+      this.listenTo(Todos, 'all', this.render);
 
       this.footer = this.$('footer');
       this.main = $('#main');
@@ -213,7 +211,7 @@ $(function(){
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-      Todos.each(this.addOne);
+      Todos.each(this.addOne, this);
     },
 
     // If you hit return in the main input field, create new **Todo** model,
@@ -228,7 +226,7 @@ $(function(){
 
     // Clear all done todo items, destroying their models.
     clearCompleted: function() {
-      _.each(Todos.done(), function(todo){ todo.clear(); });
+      _.invoke(Todos.done(), 'destroy');
       return false;
     },
 
