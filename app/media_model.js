@@ -1,9 +1,8 @@
-define([
-  'underscore',
-  'backbone'
-], function( _, Backbone ){
+define(function(require, exports, module){
 
-  var Media = Backbone.Model.extend({
+  var Backbone = require('backbone');
+
+  module.exports = Backbone.Model.extend({
 
     url: function(){
       return '/api/media/'+ this.id;
@@ -19,8 +18,6 @@ define([
     }
 
   });
-
-  return Media;
 
 });
 

@@ -1,16 +1,18 @@
-define([
-  'underscore',
-  'backbone',
-  'tpl!templates/cell.ejs',
-  'plugins/jquery.isotope',
-  'plugins/jquery.imagesloaded'
-], function( _, Backbone, cellTmpl){
+define(function(require, exports, module){
 
-  var Cell = Backbone.View.extend({
+  var _ = require('underscore');
+  var Backbone = require('backbone');
+
+  require('plugins/jquery.isotope');
+  require('plugins/jquery.imagesloaded');
+
+  module.exports = Backbone.View.extend({
 
     tagName: 'article',
 
     className: 'span2',
+
+    template: require('tpl!templates/cell.ejs'),
 
     initialize: function(){
       if( !this.model ){
@@ -19,13 +21,7 @@ define([
 
       this.model.on('change:cover_url', _.once(this.addToGrid), this);
 
-      if(this.model.collection.indexOf(this.model) < 10){
-        if( this.model.get('url') ){
-          this.backgroundRender();
-        } else {
-          this.model.on('change:url', _.once(this.backgroundRender), this);
-        }
-      }
+      this.loadAnimatedGif = _.once(this.backgroundRender, this);
 
     },
 
@@ -52,6 +48,7 @@ define([
         dfd.done(function(){
           timer && clearTimeout( timer );
           self.updateProgress('100%');
+          self.$('.progress').slideUp();
           delete self.full_img;
         });
 
@@ -70,7 +67,7 @@ define([
     },
 
     render: function(){
-      this.$el.html( cellTmpl( this.model.toJSON() ) );
+      this.$el.html( this.template( this.model.toJSON() ) );
     },
 
     addToGrid: function(){
@@ -86,7 +83,8 @@ define([
       'click [data-action="pause"]': 'pause',
       'click [data-action="fullscreen"]': 'fullScreen',
       'click [data-action="delete"]': 'destroy',
-      'dblclick img': 'fullScreen'
+      'dblclick img': 'fullScreen',
+      'mouseover': 'loadAnimatedGif'
     },
 
     fullScreen: function(e){
@@ -153,6 +151,5 @@ define([
 
   });
 
-  return Cell;
 });
 

@@ -4,6 +4,7 @@ var less       = require('less');
 var Url = require('url');
 var config = require('../config');
 var path = require('path');
+var _ = require('lodash');
 
 var ec = ecstatic( path.resolve(__dirname + '/..') );
 var parser = new less.Parser({
@@ -25,7 +26,9 @@ function processLess( req, res, filename ){
       var errorMsg;
       if( err ){
         errorMsg = '/*\n';
-        for(var i in err) { errorMsg += ( i +': '+ err[i] + '\n' ); }
+        errorMsg += _.map(err, function(msg, i){
+          return i +': '+ msg;
+        }).join('\n');
         errorMsg += '*/\n';
         console.log('\n====\n'+ errorMsg +'\n====\n');
       }

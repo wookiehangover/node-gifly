@@ -1,24 +1,19 @@
-define([
-  'underscore',
-  'backbone',
-  'cell',
-  'upload',
-  'plugins/jquery.isotope',
-  'plugins/jquery.imagesloaded'
-], function( _, Backbone, Cell, Uploader){
+define(function(require, exports, module){
 
-  var Grid = Backbone.View.extend({
+  var _ = require('underscore');
+  var Backbone = require('backbone');
+  var Cell = require('cell');
+  var Uploader = require('upload');
+
+  require('plugins/jquery.isotope');
+  require('plugins/jquery.imagesloaded');
+
+  module.exports = Backbone.View.extend({
 
     el: $('#gif-grid'),
 
     initialize: function( options ){
       var self = this;
-
-      if( !options.socket ){
-        throw new Error('You must provide a socket instance');
-      }
-
-      this.socket = options.socket;
 
       if( !this.collection ){
         throw new Error('You must provide a collection');
@@ -27,7 +22,7 @@ define([
       this.collection.view = this;
 
       this.collection.on('add', function( m ){
-        var model = this.collection.getByCid( m.cid );
+        var model = this.collection.get( m.cid );
         model.view = new Cell({ model: model });
 
         if( model.get('cover_url') ){
@@ -56,7 +51,6 @@ define([
       var self = this;
 
       self.$el.imagesLoaded(function(){
-
         self.$el.isotope({
           itemSelector: 'article',
           getSortData: {
@@ -70,28 +64,36 @@ define([
       });
 
       var $window = $(window);
+      var height = $window.height();
       var last_page = false;
 
-      $window.on('scroll', _.debounce(function(){
-        if( !last_page &&
-            $window.scrollTop() + $window.height() >= self.$el.height() - 300 ){
+      var prevScrollPos = $window.scrollTop();
 
-          self.collection.current_page += 1;
+      var lazyLoad = _.debounce(function(){
 
-          $.getJSON( self.collection.url(), function(results){
-            if( !results.length ){
-              self.collection.current_page--;
-              last_page = true;
-              return;
-            }
-            self.collection.add(results);
-          });
+        self.collection.current_page += 1;
+
+        $.getJSON( self.collection.url(), function(results){
+          if( !results.length ){
+            self.collection.current_page--;
+            last_page = true;
+            return;
+          }
+          Backbone.history.navigate('page/'+ self.collection.current_page);
+          self.collection.add(results);
+        });
+
+      }, 2000, true);
+
+      $window.on('scroll', function(){
+        var scrollPos = $window.scrollTop();
+        if( !last_page && scrollPos + height >= self.$el.height() - 300 ){
+          lazyLoad();
         }
-      },100));
+        prevScrollPos = scrollPos;
+      });
     }
 
   });
-
-  return Grid;
 
 });

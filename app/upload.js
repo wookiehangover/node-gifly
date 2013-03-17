@@ -1,6 +1,6 @@
-define([
-  'underscore'
-], function( _ ){
+define(function(require, exports, module){
+
+  var _ = require('underscore');
 
   function Uploader( view ){
     if( !view || !view.collection ){
@@ -102,6 +102,6 @@ define([
     });
   };
 
-  return Uploader;
+  module.exports = Uploader;
 
 });

@@ -14,6 +14,9 @@
       position: relative;
       width: 100%;
       text-align: center;
+      -webkit-perspective: 1000;
+      -webkit-transform: translate3d(0,0,0);
+
       :after {
         content: "loading...";
         #font > #family > .monospace();
@@ -53,12 +56,11 @@
     }
 
     .progress {
-      .size(2px,5%);
       position: absolute;
       background: @blue;
       left: 0; top: 0;
       .box-shadow(0px 0px 4px 0px @blue);
-      .size(2px,5%);
+      .size(10px,5%);
       .transition(width 0.4s ease-in-out);
       .opacity(20);
     }

@@ -1,13 +1,13 @@
-define([
-  'underscore',
-  'backbone',
-  'media_model',
-  'plugins/jquery.deparam'
-], function( _, Backbone, MediaModel ){
+define(function(require, exports, module){
 
-  var Media = Backbone.Collection.extend({
+  var Backbone = require('backbone');
+  var MediaModel = require('media_model');
+
+  module.exports = Backbone.Collection.extend({
 
     model: MediaModel,
+
+    current_page: 1,
 
     url: function(){
       var url = '/api/media';
@@ -17,14 +17,29 @@ define([
       return url;
     },
 
-    initialize: function(){
-      var params = $.deparam( location.search.replace(/^\?/, '') );
+    initialize: function(params){
+      if( !params.app ){
+        throw new Error('Requires an `app` instance');
+      }
 
-      this.current_page = params.p ? params.p : 1;
+      this.app = params.app;
+
+      var media = this;
+
+      this.app.socket.on('message', function(data){
+        data = JSON.parse(data);
+
+        var model = media.get( data.id );
+
+        if( model ){
+          model.update( data );
+        } else {
+          media.add( data );
+        }
+      });
+
     }
 
   });
-
-  return Media;
 
 });

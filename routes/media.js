@@ -14,7 +14,10 @@ module.exports = function( router, client ){
 
   var media = mediaModel( client );
 
-  router.add('', function( req, res, params ){
+  function loadPage( req, res, params ){
+
+    params = params && _.isObject(params) ? params : { p: params };
+
     req.session.get(function(err, sess){
 
       var data = {};
@@ -52,7 +55,10 @@ module.exports = function( router, client ){
       });
 
     });
-  });
+  }
+
+  router.add('', loadPage);
+  router.add('page/:page', loadPage);
 
   router.add(/^\/([\w]{8})\.gif$/, function( req, res, hash ){
     client.get('gif:'+ hash, function( err, url){
