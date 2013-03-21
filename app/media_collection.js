@@ -9,10 +9,10 @@ define(function(require, exports, module){
 
     current_page: 1,
 
-    url: function(){
+    url: function(page){
       var url = '/api/media';
       if( this.current_page > 1 ){
-        url += '?p='+ this.current_page;
+        url += '?p='+ (page || this.current_page);
       }
       return url;
     },
@@ -32,7 +32,7 @@ define(function(require, exports, module){
         var model = media.get( data.id );
 
         if( model ){
-          model.update( data );
+          model.set( data );
         } else {
           media.add( data );
         }

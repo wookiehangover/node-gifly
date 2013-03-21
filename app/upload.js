@@ -10,7 +10,7 @@ define(function(require, exports, module){
     this.view = view;
 
     document.addEventListener('dragenter', function(e){
-      e.preventDefault();
+      e.preventDefault()
       e.stopPropagation();
     }, false);
 

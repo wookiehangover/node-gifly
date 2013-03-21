@@ -21,14 +21,6 @@ define(function(require, exports, module){
 
       this.collection.view = this;
 
-      this.collection.on('add', function( m ){
-        var model = this.collection.get( m.cid );
-        model.view = new Cell({ model: model });
-
-        if( model.get('cover_url') ){
-          model.view.addToGrid();
-        }
-      }, this);
 
       this.collection.fetch().done(function( collection ){
 
@@ -41,6 +33,15 @@ define(function(require, exports, module){
         });
 
         self.render();
+
+        self.collection.on('add', function( m ){
+          var model = self.collection.get( m.cid );
+          model.view = new Cell({ model: model });
+
+          if( model.get('cover_url') ){
+            model.view.addToGrid();
+          }
+        });
 
       });
 
@@ -64,34 +65,33 @@ define(function(require, exports, module){
       });
 
       var $window = $(window);
-      var height = $window.height();
-      var last_page = false;
+      var windowHeight = $window.height();
+      var lastPage = false;
 
       var prevScrollPos = $window.scrollTop();
 
-      var lazyLoad = _.debounce(function(){
+      var lazyLoad = _.throttle(function(){
 
-        self.collection.current_page += 1;
-
-        $.getJSON( self.collection.url(), function(results){
+        $.getJSON( self.collection.url(self.collection.current_page + 1), function(results){
           if( !results.length ){
-            self.collection.current_page--;
-            last_page = true;
+            lastPage = true;
             return;
           }
-          Backbone.history.navigate('page/'+ self.collection.current_page);
+          self.collection.current_page += 1;
+          // Backbone.history.navigate('page/'+ self.collection.current_page);
           self.collection.add(results);
         });
 
-      }, 2000, true);
+      }, 1000);
 
-      $window.on('scroll', function(){
+      $window.on('scroll', _.debounce(function(){
         var scrollPos = $window.scrollTop();
-        if( !last_page && scrollPos + height >= self.$el.height() - 300 ){
+
+        if( !lastPage && scrollPos + windowHeight >= self.$el.height() - 350 ){
           lazyLoad();
         }
         prevScrollPos = scrollPos;
-      });
+      }, 100, true));
     }
 
   });

@@ -19,7 +19,7 @@ define(function(require, exports, module){
         throw new Error('You must provide a model');
       }
 
-      this.model.on('change:cover_url', _.once(this.addToGrid), this);
+      this.model.once('change:cover_url', this.addToGrid, this);
 
       this.loadAnimatedGif = _.once(this.backgroundRender, this);
 
@@ -35,7 +35,8 @@ define(function(require, exports, module){
       var timer;
 
       if( url === undefined ){
-        throw new Error('The model needs a url attribute to do this');
+        console.error('The model needs a url attribute to do this');
+        return;
       }
 
       this.$('img').imagesLoaded(function(){
