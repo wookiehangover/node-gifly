@@ -22,12 +22,7 @@ define(function(require, exports, module){
         this.app.media.current_page = parseInt(page, 10);
       }
 
-      if( !this.app.grid ){
-        this.app.grid = new Grid({
-          collection: this.app.media,
-          socket: this.app.socket
-        });
-      }
+      this.app.media.fetch();
     }
 
   });

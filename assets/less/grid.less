@@ -6,14 +6,20 @@
   width: ~"calc(100% - 60px)";
   float: left; clear: both;
 
+  &.show {
+    article {
+      visibility: hidden;
+    }
+  }
+
   article {
     overflow: hidden;
+    position: relative;
     z-index: 1000;
 
     figure {
       position: relative;
       width: 100%;
-      text-align: center;
       -webkit-perspective: 1000;
       -webkit-transform: translate3d(0,0,0);
 
@@ -29,11 +35,24 @@
       }
     }
 
+    &.show {
+      visibility: visible !important;
+      width: 622px;
+
+      .transition(all 400ms);
+
+      figure img {
+        border: 1px solid @ltgray;
+        height: none;
+        width: auto;
+      }
+    }
+
     &:hover .controls { left: 0; }
 
     .controls {
       position: absolute;
-      bottom: 20px;
+      top: 0px;
       left: -11em;
       background: rgba(255,255,255, 0.5);
       height: 3em;

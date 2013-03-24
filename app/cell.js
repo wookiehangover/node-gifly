@@ -18,11 +18,9 @@ define(function(require, exports, module){
       if( !this.model ){
         throw new Error('You must provide a model');
       }
-
-      this.model.once('change:cover_url', this.addToGrid, this);
-
       this.loadAnimatedGif = _.once(this.backgroundRender, this);
 
+      this.listenToOnce(this.model, 'change:cover_url', this.addToGrid, this);
     },
 
     updateProgress: function( p ){
@@ -82,19 +80,38 @@ define(function(require, exports, module){
     events: {
       'click [data-action="play"]': 'play',
       'click [data-action="pause"]': 'pause',
-      'click [data-action="fullscreen"]': 'fullScreen',
       'click [data-action="delete"]': 'destroy',
+      'click [data-action="fullscreen"]': 'fullScreen',
+      'click [data-action="closefullscreen"]': 'closeFullScreen',
       'dblclick img': 'fullScreen',
       'mouseover': 'loadAnimatedGif'
     },
 
-    fullScreen: function(e){
-      if( !this.is_playing ){
-        this.play();
-      }
+    fullScreen: function(){
+      this.$el.addClass('show');
 
-      var request = Modernizr.prefixed('RequestFullScreen', this.$('img')[0]);
-      request && request();
+      $('#gif-grid')
+        .addClass('show')
+        .isotope({ filter: this.el })
+        .css({ height: '100%' });
+
+      this.loadAnimatedGif();
+      this.play();
+
+      this.$('[data-action="fullscreen"]').attr('data-action', 'closefullscreen');
+      return false;
+    },
+
+    closeFullScreen: function(){
+      this.$el.removeClass('show');
+
+      $('#gif-grid')
+        .removeClass('show')
+        .isotope({ filter: '' });
+
+      this.pause();
+
+      this.$('[data-action="closefullscreen"]').attr({ 'data-action': 'fullscreen' });
       return false;
     },
 
@@ -113,7 +130,7 @@ define(function(require, exports, module){
       img.attr('src', url);
       this.is_playing = true;
 
-      $(e.currentTarget).attr({
+      this.$('[data-action="play"]').attr({
         'data-action': 'pause',
         'class': 'icon-pause'
       });
@@ -132,7 +149,7 @@ define(function(require, exports, module){
       img.attr('src', url);
       this.is_playing = false;
 
-      $(e.currentTarget).attr({
+      this.$('[data-action="pause"]').attr({
         'data-action': 'play',
         'class': 'icon-play'
       });

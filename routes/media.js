@@ -94,7 +94,7 @@ module.exports = function( router, client ){
         "twitter:description": 'All your GIF are belong to us.'
       };
 
-      res.template('show.ejs', { url: url, meta: meta });
+      res.template('show.ejs', { url: url, meta: meta, embed: DOMAIN + 'embed/'+ hash });
     });
   });
 

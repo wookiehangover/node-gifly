@@ -1,8 +1,21 @@
 #random {
   padding-top: 2em;
-  article figure {
-    width: 100%;
-    img { width: 100%; border: 1px solid @ltgray; }
+  article{
+    figure {
+      width: 100%;
+      img { width: 100%; border: 1px solid @ltgray; }
+    }
+
+    textarea {
+      width: 100%;
+      text-align: left;
+      border: 1px solid @ltgray;
+      color: @ltgray;
+      .transition(color 200ms);
+      &:hover, &:focus {
+        color: #444;
+      }
+    }
   }
 }
 

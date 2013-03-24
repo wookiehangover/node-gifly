@@ -4,6 +4,7 @@ define(function(require, exports, module){
   var EngineIO = require('vendor/engine.io');
   var MediaCollection = require('media_collection');
   var Router = require('router');
+  var GridView = require('grid');
 
   module.exports = Backbone.View.extend({
     el: $('body'),
@@ -21,7 +22,10 @@ define(function(require, exports, module){
         port: location.port
       });
 
+
       this.media = new MediaCollection({ app: this });
+      this.grid = new GridView({ collection: this.media, app: this });
+
       this.router = new Router({ app: this });
     },
 

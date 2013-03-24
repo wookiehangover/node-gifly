@@ -12,7 +12,7 @@ define(function(require, exports, module){
 
     el: $('#gif-grid'),
 
-    initialize: function( options ){
+    initialize: function( params ){
       var self = this;
 
       if( !this.collection ){
@@ -21,31 +21,25 @@ define(function(require, exports, module){
 
       this.collection.view = this;
 
-
-      this.collection.fetch().done(function( collection ){
-
-        self.collection.each(function( model ){
-          var el = self.$('[data-id="'+ model.id +'"]');
-
-          if( el.length ){
-            model.view = new Cell({ model: model, el: el.parent() });
-          }
-        });
-
-        self.render();
-
-        self.collection.on('add', function( m ){
-          var model = self.collection.get( m.cid );
-          model.view = new Cell({ model: model });
-
-          if( model.get('cover_url') ){
-            model.view.addToGrid();
-          }
-        });
-
-      });
+      this.listenTo( this.collection, 'add', this.addModel, this);
+      this.listenToOnce( this.collection, 'sync', this.render, this);
 
       this.uploader = new Uploader( this );
+    },
+
+    addModel: function( model ){
+      var params = { model: model };
+      var el = this.$('[data-id="'+ model.id +'"]').parent();
+
+      if( el.length ){
+        params.el = el;
+      }
+
+      model.view = new Cell( params );
+
+      if( !el.length && model.get('cover_url') ){
+        model.view.addToGrid();
+      }
     },
 
     render: function(){
