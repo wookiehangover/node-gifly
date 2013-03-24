@@ -1,16 +1,12 @@
 <%- include _header.ejs %>
-<div id="gif-grid">
-  <article class="span2">
-    <figure data-id="<%= id %>">
-      <img src="c/<%= hash %>"/>
-    </figure>
-    <div class="controls">
-      <a href="#" data-action="play" class="play"><i class="icon-play"></i></a>
-      <a href="#" data-action="pause"><i class="icon-pause"></i></a>
-      <a href="#" data-action="fullscreen"><i class="icon-fullscreen"></i></a>
-      <a href="#" data-action="link"><i class="icon-link"></i></a>
-    </div>
-  </article>
+<div class="container">
+  <div class="row" id="random">
+    <article class="span8 offset2">
+      <figure>
+        <img src="<%= url %>"/>
+      </figure>
+    </article>
+  </div>
 </div>
 <%- include _footer.ejs %>
 

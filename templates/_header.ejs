@@ -6,6 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <title><% if( typeof title !== 'undefined' ){ %><%= title %><% } else { %>GIF.LY - Animated Gifs for One and All<% } %></title>
+  <% if(typeof meta !== "undefined"){ %>
+    <% Object.keys(meta).forEach(function(key){ %>
+      <meta name="<%= key %>" content="<%= meta[key] %>">
+    <% }) %>
+  <% } %>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
 
@@ -13,6 +18,7 @@
   <link rel="stylesheet" href="/assets/css/gifly.css">
 
   <script src="/assets/js/vendor/modernizr-2.6.1.min.js"></script>
+
 </head>
 <body>
 

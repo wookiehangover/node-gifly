@@ -16,7 +16,7 @@
       <div class="controls">
         <a href="#" data-action="play" class="icon-play"></a>
         <a href="#" data-action="fullscreen" class="icon-fullscreen"></a>
-        <a href="/<%= gif.hash %>.gif" class="icon-link"></a>
+        <a href="/<%= gif.hash %>" class="icon-link"></a>
         <a href="/k/?src=/<%= gif.hash %>.gif" class="icon-magic"></a>
         <% if( user && (gif.user && user.username === gif.user ) || user.mod === true ){%>
         <a href="#" data-action="delete" class="icon-remove"></a>

@@ -10,6 +10,8 @@ var _ = require('lodash');
 var readme = fs.readFileSync( path.resolve(__dirname + '/../readme.md') );
 readme = markdown.toHTML( readme.toString() );
 
+var DOMAIN = 'http://'+ config.host +'/';
+
 module.exports = function( router, client ){
 
   var media = mediaModel( client );
@@ -61,7 +63,7 @@ module.exports = function( router, client ){
   router.add('page/:page', loadPage);
 
   router.add(/^\/([\w]{8})\.gif$/, function( req, res, hash ){
-    client.get('gif:'+ hash, function( err, url){
+    client.get('gif:'+ hash, function( err, url ){
       if( err ){
         return res.error(500);
       }
@@ -71,6 +73,26 @@ module.exports = function( router, client ){
       }
 
       res.redirect( 'http:'+ url, 301 );
+    });
+  });
+
+  router.add(/^\/([\w]{8})$/, function( req, res, hash ){
+    client.get('gif:'+ hash, function( err, url ){
+      if( err ){
+        return res.error(500);
+      }
+
+      if( !url ){
+        return res.error(404);
+      }
+
+      var meta = {
+        "twitter:card": "photo",
+        "twitter:url": DOMAIN + hash,
+        "twitter:image": url
+      };
+
+      res.template('show.ejs', { url: url, meta: meta });
     });
   });
 
@@ -96,7 +118,6 @@ module.exports = function( router, client ){
   });
 
   function kaleidos( req, res, path ){
-
     req.logger({ proxy: "Kaleidos proxy" });
 
     var url = 'http://coldhead.github.com/kaleidos/';
