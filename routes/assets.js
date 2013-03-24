@@ -54,6 +54,11 @@ module.exports = function( router, client ){
     ec( req, res );
   });
 
+  router.add('robots.txt', function(req, res){
+    req.url = '/assets/robots.txt';
+    ec( req, res );
+  });
+
   // google webmaster tools
   router.add('google89fecbf161cfd6d7.html', function(req, res){
     req.url = '/assets/google89fecbf161cfd6d7.html';
