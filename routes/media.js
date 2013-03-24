@@ -89,7 +89,9 @@ module.exports = function( router, client ){
       var meta = {
         "twitter:card": "photo",
         "twitter:url": DOMAIN + hash,
-        "twitter:image": url
+        "twitter:image": 'http:'+ url,
+        "twitter:title": 'GIF.LY',
+        "twitter:description": 'All your GIF are belong to us.'
       };
 
       res.template('show.ejs', { url: url, meta: meta });
