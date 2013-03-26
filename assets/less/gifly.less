@@ -17,6 +17,64 @@
 @import 'isotope';
 @import 'markdown';
 
+
+/*
+ * Remove text-shadow in selection highlight: h5bp.com/i
+ * These selection rule sets have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #FF5A57;
+    text-shadow: none;
+     -moz-animation: rainbow-text 12s infinite;
+          animation: rainbow-text 12s infinite;
+}
+
+::selection {
+    background: #FF5A57;
+    text-shadow: none;
+    -webkit-animation: rainbow-text 12s infinite;
+          animation: rainbow-text 12s infinite;
+}
+
+@-webkit-keyframes rainbow-text {
+  0%   { background: #FF5A57; }
+  20%  { background: rgb(0, 14, 96); }
+  40%  { background: rgb(255, 0, 94); }
+  60%  { background: rgb(255, 217, 102); }
+  80%  { background: rgb(0, 240, 77); }
+  100% { background: #FF5A57; }
+}
+
+@-moz-keyframes rainbow-text { 
+  0%   { background: #FF5A57; }
+  20%  { background: rgb(0, 14, 96); }
+  40%  { background: rgb(255, 0, 94); }
+  60%  { background: rgb(255, 217, 102); }
+  80%  { background: rgb(0, 240, 77); }
+  100% { background: #FF5A57; }
+}
+
+@-ms-keyframes rainbow-text {
+  0%   { background: #FF5A57; }
+  20%  { background: rgb(0, 14, 96); }
+  40%  { background: rgb(255, 0, 94); }
+  60%  { background: rgb(255, 217, 102); }
+  80%  { background: rgb(0, 240, 77); }
+  100% { background: #FF5A57; }
+}
+
+@keyframes rainbow-text {
+  0%   { background: #FF5A57; }
+  20%  { background: rgb(0, 14, 96); }
+  40%  { background: rgb(255, 0, 94); }
+  60%  { background: rgb(255, 217, 102); }
+  80%  { background: rgb(0, 240, 77); }
+  100% { background: #FF5A57; }
+}
+
+
 @ltgray: #E6E6E6;
 
 .sprite () { background: url(/assets/img/sprite.gif) no-repeat top left; }

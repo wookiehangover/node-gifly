@@ -9,5 +9,13 @@
     </article>
   </div
 </div>
+<%- include _end_scripts.ejs %>
+<script>
+  jQuery(function($){
+    $('textarea').click(function(e){
+      $(this).select();
+    });
+  });
+</script>
 <%- include _footer.ejs %>
 
