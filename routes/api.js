@@ -46,12 +46,12 @@ module.exports = function( router, client ){
 
         var error;
 
-        if( !user ){
-          error = [{ error: "Only logged in Users can delete" }, 401];
-        } else if(config.mods.indexOf(user.username) === -1 ||
-                  (data[1] && user.username !== data[1])){
-          error = [{ error: "You can only delete things that belong to you"}, 403];
-        }
+        // if( !user ){
+        //   error = [{ error: "Only logged in Users can delete" }, 401];
+        // } else if(config.mods.indexOf(user.username) === -1 ||
+        //           (data[1] && user.username !== data[1])){
+        //   error = [{ error: "You can only delete things that belong to you"}, 403];
+        // }
 
         if( error !== undefined ){
           return res.json.apply(null, error);

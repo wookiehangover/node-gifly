@@ -5,7 +5,8 @@ require.config({
     vendor: "../assets/js/vendor",
     plugins: "../assets/js/plugins",
 
-    backbone: "components/backbone/backbone",
+    backbone: "components/backbone-amd/backbone",
+    jquery: "components/jquery/jquery",
     underscore: "../assets/js/vendor/lodash",
 
     // plugins
@@ -18,11 +19,6 @@ require.config({
   },
 
   shim: {
-
-    backbone: {
-      exports: "Backbone",
-      deps: ["underscore"]
-    },
 
     "vendor/engine.io": {
       exports: "eio"
