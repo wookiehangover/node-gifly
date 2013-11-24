@@ -24,7 +24,7 @@ if (process.env.redisPort){
 }
 
 if (process.env.redisAuth) {
-  exports.redisAuth = process.env.redisAuth;
+  exports.redis.auth = process.env.redisAuth;
 }
 
 exports.errorPage = { debug: false }
@@ -93,10 +93,10 @@ try {
   admin = {}
 }
 
-Object.keys(admin).forEach(function (k) {
-  if (k === 'redisAuth') exports.redis.auth = admin[k]
-  exports[k] = admin[k]
-})
+// Object.keys(admin).forEach(function (k) {
+//   if (k === 'redisAuth') exports.redis.auth = admin[k]
+//   exports[k] = admin[k]
+// })
 
 if (module === require.main) {
   // just show the configs
