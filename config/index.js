@@ -7,7 +7,7 @@ exports.key = 'keyboard cat'
 exports.s3 = {
   key: process.env.AWS_KEY,
   secret: process.env.AWS_SECRET,
-  bucket: 'i.wookiehangover.com'
+  bucket: process.env.AWS_BUCKET || 'i.wookiehangover.com'
 }
 
 exports.mods = ['wookiehangover'];
@@ -15,9 +15,21 @@ exports.mods = ['wookiehangover'];
 // redis auth 
 exports.redis = { host: '127.0.0.1', port: 6379 }
 
-exports.errorPage = { debug: true }
+if (process.env.redisHost){
+  exports.redis.host = process.env.redisHost;
+}
 
-exports.debug = true
+if (process.env.redisPort){
+  exports.redis.port = process.env.redisPort;
+}
+
+if (process.env.redisAuth) {
+  exports.redisAuth = process.env.redisAuth;
+}
+
+exports.errorPage = { debug: false }
+
+exports.debug = false
 
 exports.tmpDir = require('path').resolve('tmp');
 
@@ -32,15 +44,50 @@ exports.templateOptions = {
 
 exports.from = 'no-reply@gif.ly';
 
+exports.mailTransportType = "SMTP"
+exports.mailTransportSettings = {
+  service: "SendGrid",
+  auth: {}
+}
+
+if (process.env.sendgridUser){
+  exports.mailTransportSettings.auth.user = process.env.sendgridUser
+}
+
+if (process.env.sendgridPass){
+  exports.mailTransportSettings.auth.pass = process.env.sendgridPass
+}
+
+exports.loggly = {
+  subdomain: 'gifly',
+  auth: {},
+  json: true
+};
+
+if (process.env.logglyUser){
+  exports.loggly.auth.user = process.env.logglyUser
+}
+
+if (process.env.logglyPass){
+  exports.loggly.auth.pass = process.env.logglypass
+}
+
+if (process.env.logglyToken){
+  exports.logglyToken = process.env.logglyToken
+}
+
+
 /*****************/
 /* don't delete! */
 /*****************/
 var env = exports.env = process.env.NODE_ENV || process.env.APPLICATION_MODE
-var admin
-if (env === 'production') {
-  admin = require('./config.prod.js')
-} else try {
-  admin = require('./config.dev.js')
+var admin;
+try {
+  if (env === 'production') {
+    admin = require('./config.prod.js')
+  } else {
+    admin = require('./config.dev.js')
+  } 
 } catch (er) {
   console.error('Warning: No admin configurations.  Not suitable for production use.')
   admin = {}
