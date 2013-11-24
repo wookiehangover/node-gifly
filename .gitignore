@@ -32,3 +32,4 @@ config/config.p*
 config/config.d*
 
 bin/pid
+dumps/*

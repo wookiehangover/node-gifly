@@ -72,10 +72,10 @@ module.exports = function( router, client ){
   });
 
   // re-route production js assets in dev mode
-  router.add('dist/release/require.js', function( req, res ){
+  router.add('dist/release/*path', function( req, res ){
     var url = Url.parse(req.url);
 
-    if( config.env !== 'production' ){
+    if( config.env !== 'production' && url.pathname === '/dist/release/require.js' ){
       url.pathname = '/app/bower_components/requirejs/require.js';
       req.url = Url.format( url );
     }

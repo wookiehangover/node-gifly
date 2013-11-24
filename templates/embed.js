@@ -4,6 +4,11 @@
   gif ='<div class="gifly-embed" id="'+id+'"><div class="gifly-figure"><img src="'+h+'/c/<%= hash %>"><div class="gifly-progress"></div></div><div class="gifly-controls"><a href="'+h+'" class="gifly-logo">gif.ly</a><a href="#" data-action="play" class="icon-play"></a><a href="http://<%= host %>/<%= hash %>.gif" target="_blank"><i class="icon-link"></i></a><a href="'+h+'/k/?src=/<%= hash %>.gif" class="icon-magic"></a></div></div>';
   if( (jq = w.jQuery || w.$) && jq.fn && parseFloat(jq.fn.jquery) >= 1.8 ) G.$ = jq;
 
+  if( location.hostname === "www.thepensblog.com" ){
+    console.error("you're using too much of my bandwidth, sorry");
+    return;
+  }
+
   function loadScript(cb) {
     var script = d.createElement('script');
     script.type  = 'text/javascript';

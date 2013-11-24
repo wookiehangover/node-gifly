@@ -1,6 +1,4 @@
 require.config({
-  deps: ["main"],
-
   paths: {
     vendor: "../assets/js/vendor",
     plugins: "../assets/js/plugins",
@@ -8,7 +6,7 @@ require.config({
     components: 'bower_components',
     backbone: "bower_components/backbone-amd/backbone",
     jquery: "bower_components/jquery/jquery",
-    underscore: "../assets/js/vendor/lodash",
+    underscore: "bower_components/lodash/dist/lodash",
 
     // plugins
     tpl: "../assets/js/plugins/tpl",
@@ -20,7 +18,7 @@ require.config({
 
   shim: {
 
-    "vendor/engine.io": {
+    "lib/engine.io": {
       exports: "eio"
     },
 

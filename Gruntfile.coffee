@@ -18,19 +18,26 @@ config =
         keepSpecialComments: 0
 
   requirejs:
+    options:
+      generateSourceMaps: true
+      findNestedDependencies: true
+      preserveLicenseComments: false
+      wrap: true
+      almond: true
+      optimize: 'uglify2'
+      mainConfigFile: 'app/config.js'
     compile:
       options:
-        mainConfigFile: 'app/config.js'
-        name: 'config'
+        include: ["main"]
+        insertRequire: ["main"]
         out: 'dist/release/require.js'
-        optimize: 'uglify2'
-        wrap: false
-        preserveLicenseComments: false
-        almond: true
 
   uglify:
     all:
       files:
+        'assets/js/vendor/engine.io.min.js': [
+          'assets/js/vendor/engine.io.js'
+        ]
         'assets/js/embed-scripts.min.js': [
           'assets/js/embed-scripts.js'
         ]

@@ -1,7 +1,7 @@
 define(function(require, exports, module){
 
   var Backbone = require('backbone');
-  var EngineIO = require('vendor/engine.io');
+  var EngineIO = window.eio;
   var MediaCollection = require('./collections/media');
   var Router = require('./lib/router');
   var GridView = require('./views/grid');
