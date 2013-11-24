@@ -1,7 +1,7 @@
 define(function(require, exports, module){
 
   var Backbone = require('backbone');
-  var MediaModel = require('media_model');
+  var MediaModel = require('models/media');
 
   module.exports = Backbone.Collection.extend({
 

@@ -1,7 +1,7 @@
 define(function(require, exports, module){
 
   var Backbone = require('backbone');
-  var Grid = require('grid');
+  var Grid = require('views/grid');
 
   module.exports = Backbone.Router.extend({
 

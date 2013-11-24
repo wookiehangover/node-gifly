@@ -5,8 +5,9 @@ require.config({
     vendor: "../assets/js/vendor",
     plugins: "../assets/js/plugins",
 
-    backbone: "components/backbone-amd/backbone",
-    jquery: "components/jquery/jquery",
+    components: 'bower_components',
+    backbone: "bower_components/backbone-amd/backbone",
+    jquery: "bower_components/jquery/jquery",
     underscore: "../assets/js/vendor/lodash",
 
     // plugins
@@ -15,7 +16,6 @@ require.config({
     // dev only
     text: "../assets/js/plugins/text",
     json: "../assets/js/plugins/json"
-
   },
 
   shim: {

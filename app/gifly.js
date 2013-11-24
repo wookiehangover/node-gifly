@@ -2,20 +2,14 @@ define(function(require, exports, module){
 
   var Backbone = require('backbone');
   var EngineIO = require('vendor/engine.io');
-  var MediaCollection = require('media_collection');
-  var Router = require('router');
-  var GridView = require('grid');
+  var MediaCollection = require('./collections/media');
+  var Router = require('./lib/router');
+  var GridView = require('./views/grid');
 
   module.exports = Backbone.View.extend({
     el: $('body'),
 
     initialize: function(){
-
-      window.gifly = this;
-
-      if( window.Modernizr.touch ){
-        scrollTo(0,1);
-      }
 
       this.socket = new EngineIO.Socket({
         host: location.hostname,

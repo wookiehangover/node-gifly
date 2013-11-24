@@ -12,6 +12,18 @@ define(function(require, exports, module){
     document.addEventListener('dragenter', function(e){
       e.preventDefault();
       e.stopPropagation();
+      $('body').addClass('ui-drag');
+      console.log('enter')
+
+      _.delay(function(){
+        $(document).one('dragleave', function(){
+          $('body').removeClass('ui-drag');
+        });
+      }, 200);
+    }, false);
+
+    document.addEventListener('dragleave', function(e){
+      console.log('leave')
     }, false);
 
     document.addEventListener('dragover', function(e){
@@ -23,6 +35,7 @@ define(function(require, exports, module){
 
     document.addEventListener('drop', function(){
       self.dropHandler.apply(self, arguments);
+      $('body').removeClass('ui-drag');
     }, false);
   }
 

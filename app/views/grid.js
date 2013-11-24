@@ -2,8 +2,8 @@ define(function(require, exports, module){
 
   var _ = require('underscore');
   var Backbone = require('backbone');
-  var Cell = require('cell');
-  var Uploader = require('upload');
+  var Cell = require('views/cell');
+  var Uploader = require('lib/upload');
 
   require('plugins/jquery.isotope');
   require('plugins/jquery.imagesloaded');

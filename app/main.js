@@ -4,7 +4,7 @@ define(function(require, exports, module){
   var Gifly = require('gifly');
 
   $(function(){
-    new Gifly();
+    window.gifly = new Gifly();
     Backbone.history.start({ pushState: true });
   });
 
