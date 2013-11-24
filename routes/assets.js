@@ -76,7 +76,7 @@ module.exports = function( router, client ){
     var url = Url.parse(req.url);
 
     if( config.env !== 'production' ){
-      url.pathname = '/app/components/requirejs/require.js';
+      url.pathname = '/app/bower_components/requirejs/require.js';
       req.url = Url.format( url );
     }
 

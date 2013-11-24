@@ -89,6 +89,38 @@ body {
   //   background: url(http://i.gif.ly/4057fb65.gif);
   // }
 
+  &.ui-drag {
+    &:after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      z-index: 2000;
+      display: block;
+      top: 0;
+      background: rgba(0,0,0,0.5);
+    }
+
+    margin-top: 59px;
+
+    > h1 {
+      position: fixed;
+      top: 50%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      margin-top: -1em;
+      z-index: 3000;
+      font-size: 6em;
+      text-align: center;
+      margin-left: 0;
+    }
+
+    #gif-grid {
+      -webkit-filter: blur(1px);
+      z-index: 0;
+    }
+  }
 }
 
 img:-webkit-full-screen {

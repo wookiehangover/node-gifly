@@ -6,8 +6,8 @@ var loggly = require('loggly');
 
 var config = require('./config');
 var router = require('./routes');
-var engine = require('./engine');
-var decorate = require('./decorators');
+var engine = require('./lib/engine');
+var decorate = require('./lib/decorators');
 
 var token = config.logglyToken;
 var logger = loggly.createClient(config.loggly);
@@ -16,18 +16,21 @@ RedSess.createClient(config.redis);
 
 var server = http.createServer(function( req, res ){
   req.logger = function(msg){
+    console.log(msg);
     logger.log(token, msg);
   };
   decorate(req, res);
   router.dispatch(req, res);
 });
 
-server.listen(3000);
+server.listen(process.env.PORT || 3000, function(){
+  console.log('starting node server');
+});
 
 // attach real-time engine
 engine( server, logger );
 
-var worker = fork( require('path').resolve(__dirname + '/processor.js'));
+var worker = fork( require('path').resolve(__dirname + '/lib/processor.js') );
 
 process.on('exit', function closeAll(){
 
@@ -39,9 +42,9 @@ process.on('exit', function closeAll(){
 
 });
 
-process.on('uncaughtException', function(err){
-  console.log('Warning: Uncaught Application Exception:' + err);
-  console.trace();
-});
+// process.on('uncaughtException', function(err){
+//   console.log('Warning: Uncaught Application Exception:' + err);
+//   console.trace();
+// });
 
 

@@ -19,7 +19,7 @@ exports.errorPage = { debug: true }
 
 exports.debug = true
 
-exports.tmpDir = require('path').resolve( __dirname + '/tmp');
+exports.tmpDir = require('path').resolve('tmp');
 
 // For development only!
 // Don't send 304s for templar (still does for styl and some others)
@@ -38,7 +38,7 @@ exports.from = 'no-reply@gif.ly';
 var env = exports.env = process.env.NODE_ENV || process.env.APPLICATION_MODE
 var admin
 if (env === 'production') {
-  admin = require('./config.admin.js')
+  admin = require('./config.prod.js')
 } else try {
   admin = require('./config.dev.js')
 } catch (er) {
