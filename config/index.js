@@ -1,5 +1,5 @@
 /*jshint asi:true, curly: false */
-exports.host = 'localhost'
+exports.host = process.env.hostname || 'localhost'
 exports.port = process.env.PORT || 3000
 
 exports.key = 'keyboard cat'
@@ -30,6 +30,8 @@ if (process.env.redisAuth) {
 exports.errorPage = { debug: false }
 
 exports.debug = false
+
+exports.ips = false
 
 exports.tmpDir = require('path').resolve('tmp');
 
@@ -69,7 +71,7 @@ if (process.env.logglyUser){
 }
 
 if (process.env.logglyPass){
-  exports.loggly.auth.pass = process.env.logglypass
+  exports.loggly.auth.pass = process.env.logglyPass
 }
 
 if (process.env.logglyToken){

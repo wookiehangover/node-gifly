@@ -30,17 +30,17 @@ server.listen(process.env.PORT || 3000, function(){
 // attach real-time engine
 engine( server, logger );
 
-// var worker = fork( require('path').resolve(__dirname + '/lib/processor.js') );
+var worker = fork( require('path').resolve(__dirname + '/lib/processor.js') );
 
-// process.on('exit', function closeAll(){
+process.on('exit', function closeAll(){
 
-//   RedSess.close();
+  RedSess.close();
 
-//   try { engine.client.quit(); } catch (e) {
-//     logger.log( token, 'error quitting redis client', e);
-//   }
+  try { engine.client.quit(); } catch (e) {
+    logger.log( token, 'error quitting redis client', e);
+  }
 
-// });
+});
 
 process.on('uncaughtException', function(err){
   console.log('Warning: Uncaught Application Exception:' + err);
