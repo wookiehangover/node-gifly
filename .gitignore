@@ -25,10 +25,10 @@ nbproject
 *.sublime-workspace
 
 node_modules
-app/components
+app/bower_components
 tmp
 
-config.a*
-config.d*
+config/config.p*
+config/config.d*
 
 bin/pid
