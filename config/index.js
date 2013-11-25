@@ -33,7 +33,7 @@ exports.debug = false
 
 exports.ips = false
 
-exports.tmpDir = require('path').resolve('tmp');
+exports.tmpDir = require('path').resolve(process.env.tmpDir || 'tmp');
 
 // For development only!
 // Don't send 304s for templar (still does for styl and some others)
@@ -95,10 +95,10 @@ try {
   admin = {}
 }
 
-// Object.keys(admin).forEach(function (k) {
-//   if (k === 'redisAuth') exports.redis.auth = admin[k]
-//   exports[k] = admin[k]
-// })
+Object.keys(admin).forEach(function (k) {
+  if (k === 'redisAuth') exports.redis.auth = admin[k]
+  exports[k] = admin[k]
+})
 
 if (module === require.main) {
   // just show the configs
